@@ -30,11 +30,11 @@ export async function POST(request: Request) {
             "--no-sandbox",
           ],
       defaultViewport: chromium.defaultViewport,
-      executablePath:
-        process.env.CHROME_EXECUTABLE_PATH ||
-        (await chromium.executablePath(
-          "https://github.com/Sparticuz/chromium/releases/download/v126.0.0/chromium-v126.0.0-pack.tar"
-        )),
+      executablePath: isLocal
+        ? process.env.CHROME_EXECUTABLE_PATH
+        : await chromium.executablePath(
+            "https://github.com/Sparticuz/chromium/releases/download/v126.0.0/chromium-v126.0.0-pack.tar"
+          ),
       headless: chromium.headless,
     });
     console.log("Browser launched");
