@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import puppeteer from "puppeteer";
 import chromium from "@sparticuz/chromium-min";
+import { PrismaClient } from "@prisma/client";
 
-export const maxDuration = 300;
-
+const prisma = new PrismaClient();
 chromium.setHeadlessMode = true;
 
 export async function POST(request: Request) {
-  const { paperUrl } = await request.json();
+  const paperUrl = "https://www.theguardian.com/uk-news";
 
   if (!paperUrl) {
     return NextResponse.json(
@@ -73,23 +73,50 @@ export async function POST(request: Request) {
         )?.textContent;
         const body = document.querySelector('div[data-gu-name="body"]');
         const paragraphs = body?.querySelectorAll("p") ?? [];
-        const text = Array.from(paragraphs).map((p) => p.textContent).join(' ');
+        const text = Array.from(paragraphs).map((p) => p.textContent).join(" ");
         const mainImg = document
           .querySelector(
             "div[data-gu-name='media'] div div figure div picture source"
           )
           ?.getAttribute("srcset");
-        return { headline, standfirst, text, mainImg };
+        const sourceUrl = window.location.href;
+        const tag = window.location.pathname.split("/")[1];
+        return { headline, standfirst, text, mainImg, sourceUrl, tag };
       });
 
       articles.push(content);
     }
 
     console.log("articles", articles);
-
     await browser.close();
 
-    return NextResponse.json({ articles });
+    // Save articles to the database
+    const storedArticles = [];
+    for (const article of articles) {
+      if (!article.headline || !article.sourceUrl) continue; // Skip invalid articles
+
+      // Check if the article already exists
+      const existingArticle = await prisma.article.findFirst({
+        where: { sourceUrl: article.sourceUrl },
+      });
+
+      if (!existingArticle) {
+        const savedArticle = await prisma.article.create({
+          data: {
+            headline: article.headline,
+            standFirst: article.standfirst || null,
+            text: article.text,
+            mainImg: article.mainImg || null,
+            sourceUrl: article.sourceUrl,
+            tag: article.tag,
+            summary: null, // No summary yet
+          },
+        });
+        storedArticles.push(savedArticle);
+      }
+    }
+
+    return NextResponse.json({ storedArticles });
   } catch (error) {
     console.error("Error during scraping:", error);
     return NextResponse.json(

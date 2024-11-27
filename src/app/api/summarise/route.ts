@@ -1,17 +1,27 @@
 import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 import { HfInference } from "@huggingface/inference";
 
-export async function POST(request: Request) {
+const prisma = new PrismaClient();
+
+export async function POST() {
   try {
-    const { text } = await request.json();
-    if (!text) {
-      return NextResponse.json({ error: "Text is required" }, { status: 400 });
+    // Step 1: Fetch one unsummarized article
+    const article = await prisma.article.findFirst({
+      where: { summary: null }, // Only fetch articles without a summary
+      orderBy: { createdAt: "asc" }, // Process the oldest first
+    });
+
+    if (!article) {
+      return NextResponse.json({ message: "No articles to summarize" });
     }
 
+    // Step 2: Use Hugging Face API to summarize the article text
     const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
+
     const result = await hf.summarization({
       model: "google/pegasus-large",
-      inputs: text,
+      inputs: article.text,
       parameters: {
         max_length: 256,
         min_length: 225,
@@ -22,22 +32,29 @@ export async function POST(request: Request) {
       },
     });
 
-    console.log("API Response:", result);
-
     if (!result || !result.summary_text) {
       return NextResponse.json(
         { error: "No summary generated" },
         { status: 400 }
       );
     }
-    console.log("result", result);
-    return NextResponse.json({ summary: result.summary_text });
+
+    // Step 3: Update the article in the database
+    const updatedArticle = await prisma.article.update({
+      where: { id: article.id },
+      data: { summary: result.summary_text },
+    });
+
+    return NextResponse.json({
+      message: "Article summarized successfully",
+      article: updatedArticle,
+    });
   } catch (error) {
-    console.error("Error details:", error);
+    console.error("Error during summarization:", error);
     return NextResponse.json(
       {
         error:
-          error instanceof Error ? error.message : "Failed to summarize text",
+          error instanceof Error ? error.message : "Failed to summarize article",
       },
       { status: 500 }
     );

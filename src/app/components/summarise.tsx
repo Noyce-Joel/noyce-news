@@ -8,12 +8,12 @@ export default function Summariser() {
   const [selectedArticle, setSelectedArticle] = useState<NewsType | null>(null);
 
   useEffect(() => {
-    const getTextSummary = async () => {
-      const text: string = news.articles[0].text;
-      const summary = await getSummary(text);
-      setSelectedArticle(summary);
+    const getArticles = async () => {
+      const articles = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cron`);
+      const data = await articles.json();
+      console.log("data", data);
     };
-    getTextSummary();
+    getArticles();
   }, []);
 
   useEffect(() => {

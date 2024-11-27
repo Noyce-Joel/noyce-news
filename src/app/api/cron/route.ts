@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import puppeteer from "puppeteer";
 import chromium from "@sparticuz/chromium-min";
 import { HfInference } from "@huggingface/inference";
+import { PrismaClient } from "@prisma/client";
 
 chromium.setHeadlessMode = true;
+const prisma = new PrismaClient();
 
 export const config = {
   runtime: "edge", // Vercel edge runtime for faster execution
@@ -68,24 +70,28 @@ export async function GET() {
             "div[data-gu-name='media'] div div figure div picture source"
           )
           ?.getAttribute("srcset");
-        return { headline, standfirst, text, mainImg };
+        const sourceUrl = window.location.href;
+        const tag = window.location.pathname.split("/")[1];
+        return { headline, standfirst, text, mainImg, sourceUrl, tag };
       });
 
-      articles.push(content);
+      articles.push({ ...content, sourceUrl: link });
     }
 
     await browser.close();
 
-    // Step 2: Summarize the articles
+    // Step 2 & 3: Sequentially summarize and store articles
+    const storedArticles = [];
     const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
-    const summarizedArticles = await Promise.all(
-      articles.map(async (article) => {
-        const { text } = article;
-        if (!text) return null;
 
+    for (const article of articles) {
+      if (!article.text) continue;
+
+      try {
+        // Summarize the article
         const result = await hf.summarization({
           model: "google/pegasus-large",
-          inputs: text,
+          inputs: article.text,
           parameters: {
             max_length: 256,
             min_length: 225,
@@ -96,21 +102,38 @@ export async function GET() {
           },
         });
 
-        return {
+        const summarizedArticle = {
           ...article,
           summary: result?.summary_text || null,
         };
-      })
-    );
 
-    if (!summarizedArticles || !summarizedArticles.length) {
-      return NextResponse.json(
-        { error: "No summary generated" },
-        { status: 400 }
-      );
+        // Store in the database
+        const existingArticle = await prisma.article.findFirst({
+          where: { sourceUrl: summarizedArticle.sourceUrl },
+        });
+
+        if (!existingArticle) {
+          const savedArticle = await prisma.article.create({
+            data: {
+              headline: summarizedArticle.headline || "No headline",
+              mainImg: summarizedArticle.mainImg || null,
+              standFirst: summarizedArticle.standfirst || null,
+              text: summarizedArticle.text || "No text",
+              summary: summarizedArticle.summary || "No summary",
+              sourceUrl: summarizedArticle.sourceUrl,
+              tag: summarizedArticle.tag,
+            },
+          });
+
+          storedArticles.push(savedArticle);
+        }
+      } catch (error) {
+        console.error(`Error processing article: ${article.headline}`, error);
+        continue;
+      }
     }
 
-    return NextResponse.json({ summarizedArticles });
+    return NextResponse.json({ storedArticles });
   } catch (error) {
     console.error("Error during cron job:", error);
     return NextResponse.json(
