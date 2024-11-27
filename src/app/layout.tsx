@@ -1,16 +1,13 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+import { Dai_Banna_SIL } from "next/font/google";
+import { NewsProvider } from "./state/news-provider";
+
+const daiBanna = Dai_Banna_SIL({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-dai-banna",
 });
 
 export const metadata: Metadata = {
@@ -25,11 +22,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <NewsProvider>
+        <body className={`${daiBanna.variable} antialiased`}>
+          {children}
+        </body>
+      </NewsProvider>
     </html>
   );
 }

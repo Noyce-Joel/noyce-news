@@ -30,7 +30,7 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-
+    console.log("result", result);
     return NextResponse.json({ summary: result.summary_text });
   } catch (error) {
     console.error("Error details:", error);

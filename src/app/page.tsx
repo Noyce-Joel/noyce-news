@@ -1,10 +1,11 @@
-  /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-;
 import Summarise from "./components/summarise";
-;
-
+import { useArticles } from "./state/news-provider";
 export default function Home() {
-  
-  return <Summarise />;
+  const { news } = useArticles();
+  if (news.articles.length > 0) {
+    return <Summarise />;
+  }
+  return <div>Loading...</div>;
 }

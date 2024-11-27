@@ -1,25 +1,20 @@
 import { NextResponse } from "next/server";
 import puppeteer from "puppeteer";
 import chromium from "@sparticuz/chromium-min";
-
-export const maxDuration = 300;
+import { HfInference } from "@huggingface/inference";
 
 chromium.setHeadlessMode = true;
 
-export async function POST(request: Request) {
-  const { paperUrl } = await request.json();
+export const config = {
+  runtime: "edge", // Vercel edge runtime for faster execution
+};
 
-  if (!paperUrl) {
-    return NextResponse.json(
-      { error: "Paper URL is required" },
-      { status: 400 }
-    );
-  }
-
-  const isLocal = !!process.env.CHROME_EXECUTABLE_PATH;
-
+export async function GET() {
   try {
-    console.log("Launching browser");
+    // Step 1: Scrape the news
+    const paperUrl = "https://www.theguardian.com/uk"; // Replace with your news site URL
+    const isLocal = !!process.env.CHROME_EXECUTABLE_PATH;
+
     const browser = await puppeteer.launch({
       args: isLocal
         ? puppeteer.defaultArgs()
@@ -37,18 +32,12 @@ export async function POST(request: Request) {
         )),
       headless: chromium.headless,
     });
-    console.log("Browser launched");
 
     const page = await browser.newPage();
-    console.log("Directing to news page");
     await page.setUserAgent(
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
     );
-
-    await page.goto(paperUrl, {
-      waitUntil: "domcontentloaded",
-    });
-
+    await page.goto(paperUrl, { waitUntil: "domcontentloaded" });
     await page.waitForSelector("div#container-headlines");
 
     const links = await page.evaluate(() => {
@@ -59,9 +48,7 @@ export async function POST(request: Request) {
 
     const articles = [];
     for (const link of links) {
-      await page.goto(link, {
-        waitUntil: "domcontentloaded",
-      });
+      await page.goto(link, { waitUntil: "domcontentloaded" });
 
       const content = await page.evaluate(() => {
         const headline = document.querySelector(
@@ -73,7 +60,9 @@ export async function POST(request: Request) {
         )?.textContent;
         const body = document.querySelector('div[data-gu-name="body"]');
         const paragraphs = body?.querySelectorAll("p") ?? [];
-        const text = Array.from(paragraphs).map((p) => p.textContent).join(' ');
+        const text = Array.from(paragraphs)
+          .map((p) => p.textContent)
+          .join(" ");
         const mainImg = document
           .querySelector(
             "div[data-gu-name='media'] div div figure div picture source"
@@ -85,15 +74,47 @@ export async function POST(request: Request) {
       articles.push(content);
     }
 
-    console.log("articles", articles);
-
     await browser.close();
 
-    return NextResponse.json({ articles });
+    // Step 2: Summarize the articles
+    const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
+    const summarizedArticles = await Promise.all(
+      articles.map(async (article) => {
+        const { text } = article;
+        if (!text) return null;
+
+        const result = await hf.summarization({
+          model: "google/pegasus-large",
+          inputs: text,
+          parameters: {
+            max_length: 256,
+            min_length: 225,
+            temperature: 0.7,
+            top_k: 50,
+            top_p: 0.95,
+            repetition_penalty: 1.2,
+          },
+        });
+
+        return {
+          ...article,
+          summary: result?.summary_text || null,
+        };
+      })
+    );
+
+    if (!summarizedArticles || !summarizedArticles.length) {
+      return NextResponse.json(
+        { error: "No summary generated" },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json({ summarizedArticles });
   } catch (error) {
-    console.error("Error during scraping:", error);
+    console.error("Error during cron job:", error);
     return NextResponse.json(
-      { error: (error as Error).message },
+      { error: error instanceof Error ? error.message : "An error occurred" },
       { status: 500 }
     );
   }
