@@ -3,15 +3,7 @@
 export async function getNews() {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/news`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        cache: "no-store",
-        body: JSON.stringify({ paperUrl: "https://www.theguardian.com" }),
-      }
+      `${process.env.NEXT_PUBLIC_API_URL}/api/articles`
     );
 
     if (!response.ok) {
