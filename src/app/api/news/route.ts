@@ -5,6 +5,9 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 chromium.setHeadlessMode = true;
+
+const maxDuration = 300;
+
 export const config = {
   runtime: "edge", // Vercel edge runtime for faster execution
 };
@@ -33,7 +36,7 @@ export async function GET() {
           ],
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(
-        "https://s3.eu-north-1.amazonaws.com/connections.moonfire/chromium-v126.0.0-pack.tar"
+        "https://github.com/Sparticuz/chromium/releases/download/v126.0.0/chromium-v126.0.0-pack.tar"
       ),
       headless: chromium.headless,
     });
