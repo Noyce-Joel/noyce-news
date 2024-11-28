@@ -51,6 +51,7 @@ export async function GET() {
       waitUntil: "domcontentloaded",
       timeout: 30000,
     });
+    console.log("Navigated to news page");
 
     await page.waitForSelector("div#container-headlines");
 
@@ -64,8 +65,9 @@ export async function GET() {
     for (const link of links) {
       await page.goto(link, {
         waitUntil: "domcontentloaded",
+        timeout: 30000,
       });
-
+      console.log("Navigated to article page");
       const content = await page.evaluate(() => {
         const headline = document.querySelector(
           'div[data-gu-name="headline"] div div h1'
