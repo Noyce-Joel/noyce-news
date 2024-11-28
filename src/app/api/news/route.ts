@@ -8,9 +8,7 @@ chromium.setHeadlessMode = true;
 
 const maxDuration = 300;
 
-export const config = {
-  runtime: "edge", // Vercel edge runtime for faster execution
-};
+
 export async function GET() {
   const paperUrl = "https://www.theguardian.com/uk-news";
 
@@ -37,6 +35,7 @@ export async function GET() {
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(
         "https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar"
+        
       ),
       headless: chromium.headless,
     });
