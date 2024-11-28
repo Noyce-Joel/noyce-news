@@ -5,7 +5,9 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 chromium.setHeadlessMode = true;
-
+export const config = {
+  runtime: "edge", // Vercel edge runtime for faster execution
+};
 export async function GET() {
   const paperUrl = "https://www.theguardian.com/uk-news";
 
@@ -31,7 +33,7 @@ export async function GET() {
           ],
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(
-        // "https://github.com/Sparticuz/chromium/releases/download/v126.0.0/chromium-v126.0.0-pack.tar"
+        "https://github.com/Sparticuz/chromium/releases/download/v126.0.0/chromium-v126.0.0-pack.tar"
       ),
       headless: chromium.headless,
     });
