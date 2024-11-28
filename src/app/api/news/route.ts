@@ -33,7 +33,7 @@ export async function GET() {
           ],
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(
-        "https://github.com/Sparticuz/chromium/releases/download/v126.0.0/chromium-v126.0.0-pack.tar"
+        "https://s3.eu-north-1.amazonaws.com/connections.moonfire/chromium-v126.0.0-pack.tar"
       ),
       headless: chromium.headless,
     });
