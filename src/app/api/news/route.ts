@@ -49,6 +49,7 @@ export async function GET() {
 
     await page.goto(paperUrl, {
       waitUntil: "domcontentloaded",
+      timeout: 30000,
     });
 
     await page.waitForSelector("div#container-headlines");
