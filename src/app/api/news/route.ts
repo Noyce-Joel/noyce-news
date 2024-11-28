@@ -53,7 +53,9 @@ export async function GET() {
     });
     console.log("Navigated to news page");
 
-    await page.waitForSelector("div#container-headlines");
+    await page.waitForSelector("div#container-headlines", {
+      timeout: 30000,
+    });
 
     const links = await page.evaluate(() => {
       const headlines = document.querySelector("div#container-headlines");
