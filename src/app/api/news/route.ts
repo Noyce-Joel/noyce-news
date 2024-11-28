@@ -56,6 +56,7 @@ export async function GET() {
     await page.waitForSelector("div#container-headlines", {
       timeout: 30000,
     });
+    console.log("Headlines container found");
 
     const links = await page.evaluate(() => {
       const headlines = document.querySelector("div#container-headlines");
