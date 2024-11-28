@@ -6,7 +6,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 chromium.setHeadlessMode = true;
 
-export async function POST(request: Request) {
+export async function GET() {
   const paperUrl = "https://www.theguardian.com/uk-news";
 
   if (!paperUrl) {
