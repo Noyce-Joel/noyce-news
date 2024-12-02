@@ -54,9 +54,6 @@ export async function GET() {
     });
     console.log("Navigated to news page");
 
-    
-    console.log("Headlines container found");
-
     const links = await page.evaluate(() => {
       const headlines = document.querySelector(".dcr-ufnmjy");
       const links = headlines?.querySelectorAll("a") ?? [];
