@@ -61,6 +61,7 @@ export async function GET() {
       const links = headlines?.querySelectorAll("a") ?? [];
       return Array.from(links).map((link) => link.href);
     });
+    console.log("Links found", links);
 
     const articles = [];
     for (const link of links) {
