@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { getNews, getNewsLinks, getSummary } from "../lib/actions";
+import { getNews, getSummary } from "../lib/actions";
 
 export type NewsType = {
   
@@ -26,17 +26,13 @@ export const NewsContext = createContext<NewsContextType | undefined>(
 
 export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
   const [news, setNews] = useState<{ articles: NewsType[] }>({ articles: [] });
-  const [newsLinks, setNewsLinks] = useState<any[]>([]);
   useEffect(() => {
     const getNewsData = async () => {
       const links = await getNews();
-      const linksArticles = await getNewsLinks();
       setNews(links);
-      setNewsLinks(linksArticles);
     };
 
     getNewsData();
-    console.log("newsLinks", newsLinks);
   }, []);
 
   useEffect(() => {

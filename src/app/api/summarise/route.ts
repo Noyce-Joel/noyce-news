@@ -4,7 +4,7 @@ import { HfInference } from "@huggingface/inference";
 
 const prisma = new PrismaClient();
 
-export async function POST() {
+export async function GET() {
   try {
     // Step 1: Fetch one unsummarized article
     const article = await prisma.article.findFirst({
