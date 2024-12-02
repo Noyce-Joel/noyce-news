@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { HfInference } from "@huggingface/inference";
 
 const prisma = new PrismaClient();
-
+export const maxDuration = 300;
 export async function GET() {
   try {
     // Step 1: Fetch one unsummarized article
