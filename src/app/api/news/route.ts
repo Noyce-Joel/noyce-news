@@ -57,9 +57,29 @@ export async function GET() {
     console.log("Headlines container found");
 
     const links = await page.evaluate(() => {
-      const headlines = document.querySelector("div#container-headlines");
-      const links = headlines?.querySelectorAll("a") ?? [];
-      return Array.from(links).map((link) => link.href);
+      // Try multiple selectors to find the headlines container
+      const selectors = [
+        "div#container-headlines",
+        "#container-headlines",
+        "[data-component='headlines']",
+        ".headlines-container"
+      ];
+      
+      let headlines = null;
+      for (const selector of selectors) {
+        headlines = document.querySelector(selector);
+        if (headlines) break;
+      }
+
+      if (!headlines) {
+        console.warn("Headlines container not found with any selector");
+        return [];
+      }
+
+      const links = headlines.querySelectorAll("a") ?? [];
+      return Array.from(links)
+        .filter(link => link.href) // Ensure href exists
+        .map(link => link.href);
     });
     console.log("Links found", links);
 
