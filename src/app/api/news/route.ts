@@ -8,7 +8,6 @@ chromium.setHeadlessMode = true;
 
 export const maxDuration = 300;
 
-
 export async function GET() {
   const paperUrl = "https://www.theguardian.com/uk-news";
 
@@ -35,7 +34,6 @@ export async function GET() {
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(
         "https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar"
-        
       ),
       headless: chromium.headless,
     });
@@ -53,18 +51,27 @@ export async function GET() {
     });
     console.log("Navigated to news page");
 
-    
-    console.log("Headlines container found");
-
-    const links = await page.evaluate(() => {
-      // Try multiple selectors to find the headlines container
+    // Wait for the headlines container to appear
+    await page.waitForFunction(() => {
       const selectors = [
         "div#container-headlines",
         "#container-headlines",
         "[data-component='headlines']",
-        ".headlines-container"
+        ".headlines-container",
       ];
-      
+      return selectors.some((selector) => document.querySelector(selector));
+    }, { timeout: 10000 });
+
+    console.log("Headlines container found");
+
+    const links = await page.evaluate(() => {
+      const selectors = [
+        "div#container-headlines",
+        "#container-headlines",
+        "[data-component='headlines']",
+        ".headlines-container",
+      ];
+
       let headlines = null;
       for (const selector of selectors) {
         headlines = document.querySelector(selector);
@@ -78,42 +85,49 @@ export async function GET() {
 
       const links = headlines.querySelectorAll("a") ?? [];
       return Array.from(links)
-        .filter(link => link.href) // Ensure href exists
-        .map(link => link.href);
+        .filter((link) => link.href) // Ensure href exists
+        .map((link) => link.href);
     });
     console.log("Links found", links);
 
     const articles = [];
     for (const link of links) {
-      await page.goto(link, {
-        waitUntil: "domcontentloaded",
-        timeout: 30000,
-      });
-      console.log("Navigated to article page");
-      const content = await page.evaluate(() => {
-        const headline = document.querySelector(
-          'div[data-gu-name="headline"] div div h1'
-        )?.textContent;
+      try {
+        await page.goto(link, {
+          waitUntil: "domcontentloaded",
+          timeout: 30000,
+        });
+        console.log("Navigated to article page");
 
-        const standfirst = document.querySelector(
-          'div[data-gu-name="standfirst"] p'
-        )?.textContent;
-        const body = document.querySelector('div[data-gu-name="body"]');
-        const paragraphs = body?.querySelectorAll("p") ?? [];
-        const text = Array.from(paragraphs)
-          .map((p) => p.textContent)
-          .join(" ");
-        const mainImg = document
-          .querySelector(
-            "div[data-gu-name='media'] div div figure div picture source"
-          )
-          ?.getAttribute("srcset");
-        const sourceUrl = window.location.href;
-        const tag = window.location.pathname.split("/")[1];
-        return { headline, standfirst, text, mainImg, sourceUrl, tag };
-      });
+        const content = await page.evaluate(() => {
+          const headline = document.querySelector(
+            'div[data-gu-name="headline"] div div h1'
+          )?.textContent;
 
-      articles.push(content);
+          const standfirst = document.querySelector(
+            'div[data-gu-name="standfirst"] p'
+          )?.textContent;
+          const body = document.querySelector('div[data-gu-name="body"]');
+          const paragraphs = body?.querySelectorAll("p") ?? [];
+          const text = Array.from(paragraphs)
+            .map((p) => p.textContent)
+            .join(" ");
+          const mainImg = document
+            .querySelector(
+              "div[data-gu-name='media'] div div figure div picture source"
+            )
+            ?.getAttribute("srcset");
+          const sourceUrl = window.location.href;
+          const tag = window.location.pathname.split("/")[1];
+          return { headline, standfirst, text, mainImg, sourceUrl, tag };
+        });
+
+        if (content.headline) {
+          articles.push(content);
+        }
+      } catch (error) {
+        console.warn(`Error scraping article at ${link}:`, error);
+      }
     }
 
     console.log("articles", articles);
