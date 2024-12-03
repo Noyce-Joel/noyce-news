@@ -4,12 +4,16 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { getNews, getSummary } from "../lib/actions";
 
 export type NewsType = {
-  
+  id: string;
   headline: string;
-  standfirst: string;
+  standFirst: string;
   text: string;
   mainImg: string;
   summary: string;
+  tag: string;
+  createdAt: string;
+  updatedAt: string;
+  sourceUrl: string;
 };
 
 export type NewsContextType = {
