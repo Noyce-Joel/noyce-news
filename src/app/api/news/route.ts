@@ -5,7 +5,6 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 chromium.setHeadlessMode = true;
-
 export const maxDuration = 300;
 
 
