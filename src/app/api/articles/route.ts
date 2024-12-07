@@ -10,6 +10,8 @@ export async function GET() {
       orderBy: { createdAt: "desc" }, // Fetch the latest articles first
     });
 
+    console.log("Articles fetched:", articles);
+
     return NextResponse.json({ articles });
   } catch (error) {
     console.error("Error fetching articles:", error);
