@@ -101,10 +101,9 @@ export async function GET() {
     for (const article of articles) {
       if (!article.headline || !article.sourceUrl) {
         console.warn("Skipping invalid article:", article);
-        continue; // Skip invalid articles
+        continue; 
       }
 
-      // Ensure the Guardian newspaper exists or create it
       let newspaper = await prisma.newspaper.findUnique({
         where: { name: "The Guardian" },
       });
