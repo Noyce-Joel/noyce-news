@@ -8,7 +8,6 @@ chromium.setHeadlessMode = true;
 
 export const maxDuration = 300;
 
-
 export async function GET() {
   const paperUrl = "https://www.theguardian.com/uk-news";
 
