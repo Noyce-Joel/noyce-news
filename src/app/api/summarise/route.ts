@@ -7,10 +7,21 @@ export const maxDuration = 300;
 export async function GET() {
   try {
     // Step 1: Fetch one unsummarized article
-    const article = await prisma.article.findFirst({
+    let article = await prisma.article.findFirst({
       where: { summary: null }, // Only fetch articles without a summary
       orderBy: { createdAt: "asc" }, // Process the oldest first
     });
+
+    // Keep looking for articles until we find one with text or run out of articles
+    while (article && !article.text) {
+      article = await prisma.article.findFirst({
+        where: { 
+          summary: null,
+          createdAt: { gt: article.createdAt }
+        },
+        orderBy: { createdAt: "asc" },
+      });
+    }
 
     if (!article) {
       return NextResponse.json({ message: "No articles to summarize" });
