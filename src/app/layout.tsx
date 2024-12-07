@@ -31,14 +31,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    // <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className={`${daiBanna.variable} antialiased`}>
           <ThemeProvider attribute="class" defaultTheme="dark">
-            <SignedOut>
+            {/* <SignedOut>
               <Login />
             </SignedOut>
-            <SignedIn>
+            <SignedIn> */}
               <SidebarProvider>
                 <AppSidebar />
                 <SidebarTrigger />
@@ -47,10 +47,10 @@ export default function RootLayout({
                   {children}
                 </NewsProvider>
               </SidebarProvider>
-            </SignedIn>
+            {/* </SignedIn> */}
           </ThemeProvider>
         </body>
       </html>
-    </ClerkProvider>
+    // </ClerkProvider>
   );
 }
