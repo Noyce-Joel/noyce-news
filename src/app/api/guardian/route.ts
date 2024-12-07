@@ -95,7 +95,7 @@ export async function GET() {
     console.log("articles", articles);
     await browser.close();
 
-    // Save articles to the database
+
     const storedArticles = [];
 
     for (const article of articles) {
