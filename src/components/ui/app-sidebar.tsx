@@ -30,11 +30,11 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <div className="absolute left-4 bottom-4">
-          <UserButton appearance={{
+          {/* <UserButton appearance={{
             elements: {
               avatarBox: "w-9 h-9"
             }
-          }} />
+          }} /> */}
         </div>
         <SidebarGroup>
           <SidebarGroupLabel className="text-xl font-bold">News Freed</SidebarGroupLabel>
