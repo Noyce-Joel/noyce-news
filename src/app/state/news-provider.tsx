@@ -14,14 +14,19 @@ export type NewsType = {
   createdAt: string;
   updatedAt: string;
   sourceUrl: string;
+  source: string; // Added source field to track which newspaper
+};
+
+export type NewsSourceType = {
+  guardian: NewsType[];
+
+  bbc: NewsType[];
+  // Add more news sources as needed
 };
 
 export type NewsContextType = {
-
-  news: {
-    articles: NewsType[];
-  };
-  setNews: (news: { articles: NewsType[] }) => void;
+  news: NewsSourceType;
+  setNews: (source: keyof NewsSourceType, articles: NewsType[]) => void;
 };
 
 export const NewsContext = createContext<NewsContextType | undefined>(
@@ -29,14 +34,33 @@ export const NewsContext = createContext<NewsContextType | undefined>(
 );
 
 export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
-  const [news, setNews] = useState<{ articles: NewsType[] }>({ articles: [] });
+  const [news, setNewsState] = useState<NewsSourceType>({
+    guardian: [],
+
+    bbc: [],
+  });
+
+  const setNews = (source: keyof NewsSourceType, articles: NewsType[]) => {
+    setNewsState((prev) => ({
+      ...prev,
+      [source]: articles,
+    }));
+  };
+
   useEffect(() => {
-    const getNewsData = async () => {
-      const links = await getNews();
-      setNews(links);
+    const getGuardianData = async () => {
+      const articles = await getNews();
+
+      setNews(
+        "guardian",
+        articles.articles.map((article: any) => ({
+          ...article,
+          source: "guardian",
+        }))
+      );
     };
 
-    getNewsData();
+    getGuardianData();
   }, []);
 
   useEffect(() => {

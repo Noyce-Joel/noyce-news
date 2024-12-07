@@ -97,15 +97,37 @@ export async function GET() {
 
     // Save articles to the database
     const storedArticles = [];
+
     for (const article of articles) {
-      if (!article.headline || !article.sourceUrl) continue; // Skip invalid articles
+      if (!article.headline || !article.sourceUrl) {
+        console.warn("Skipping invalid article:", article);
+        continue; // Skip invalid articles
+      }
+
+      // Ensure the Guardian newspaper exists or create it
+      let newspaper = await prisma.newspaper.findUnique({
+        where: { name: "The Guardian" },
+      });
+
+      if (!newspaper) {
+        newspaper = await prisma.newspaper.create({
+          data: {
+            name: "The Guardian",
+            website: "https://www.theguardian.com",
+            country: "United Kingdom",
+            createdAt: new Date(), 
+            updatedAt: new Date(), 
+          },
+        });
+      }
 
       // Check if the article already exists
-      const existingArticle = await prisma.article.findFirst({
+      const existingArticle = await prisma.article.findUnique({
         where: { sourceUrl: article.sourceUrl },
       });
 
       if (!existingArticle) {
+        // Create the article linked to the Guardian newspaper
         const savedArticle = await prisma.article.create({
           data: {
             headline: article.headline,
@@ -115,6 +137,7 @@ export async function GET() {
             sourceUrl: article.sourceUrl,
             tag: article.tag,
             summary: null, // No summary yet
+            newspaperId: newspaper.id, // Link to the Guardian newspaper
           },
         });
         storedArticles.push(savedArticle);

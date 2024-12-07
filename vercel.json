@@ -1,7 +1,7 @@
 {
     "crons": [
       {
-        "path": "/api/news",
+        "path": "/api/guardian",
         "schedule": "0 * * * *" 
       },
       {

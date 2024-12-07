@@ -1,9 +1,19 @@
 import type { Metadata } from "next";
 import "./globals.css";
-
+import {
+  ClerkProvider,
+  SignInButton,
+  SignedOut,
+  SignedIn,
+  UserButton,
+} from "@clerk/nextjs";
 import { Dai_Banna_SIL } from "next/font/google";
 import { NewsProvider } from "./state/news-provider";
 
+import { ThemeProvider } from "next-themes";
+import Login from "@/components/login";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/ui/app-sidebar";
 const daiBanna = Dai_Banna_SIL({
   weight: "400",
   subsets: ["latin"],
@@ -21,12 +31,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <NewsProvider>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
         <body className={`${daiBanna.variable} antialiased`}>
-          {children}
+          <ThemeProvider attribute="class" defaultTheme="dark">
+            <SignedOut>
+              <Login />
+            </SignedOut>
+            <SignedIn>
+              <SidebarProvider>
+                <AppSidebar />
+                <SidebarTrigger />
+                <NewsProvider>
+                  
+                  {children}
+                </NewsProvider>
+              </SidebarProvider>
+            </SignedIn>
+          </ThemeProvider>
         </body>
-      </NewsProvider>
-    </html>
+      </html>
+    </ClerkProvider>
   );
 }
