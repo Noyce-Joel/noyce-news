@@ -54,10 +54,12 @@ export async function GET() {
     console.log("Navigated to news page");
 
     const links = await page.evaluate(() => {
-      const headlines = document.querySelector("ssrcss-16qtiov-ContentStack.e1k195vp2");
-      const links = headlines?.querySelectorAll("a") ?? [];
-      return Array.from(links).map((link) => link.href);
-    });
+       
+        const listItems = document.querySelectorAll('ul[role="list"] li[role="listitem"] a');
+        return Array.from(listItems).map(link => (link as HTMLAnchorElement).href);
+      });
+      
+      console.log("links", links);
 
     console.log("links", links);
 
