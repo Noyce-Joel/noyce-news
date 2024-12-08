@@ -1,32 +1,30 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { getNews, getSummary } from "../lib/actions";
+import { getNews } from "../lib/actions";
 
-export type NewsType = {
+export type ArticleType = {
   id: string;
   headline: string;
-  standFirst: string;
+  standFirst: string | null;
   text: string;
-  mainImg: string;
-  summary: string;
+  mainImg: string | null;
+  summary: string | null;
   tag: string;
   createdAt: string;
   updatedAt: string;
   sourceUrl: string;
-  source: string; // Added source field to track which newspaper
+  source: string;
 };
 
 export type NewsSourceType = {
-  guardian: NewsType[];
-
-  bbc: NewsType[];
-  // Add more news sources as needed
+  guardian: ArticleType[];
+  bbc: ArticleType[];
 };
 
 export type NewsContextType = {
   news: NewsSourceType;
-  setNews: (source: keyof NewsSourceType, articles: NewsType[]) => void;
+  setNews: (source: keyof NewsSourceType, articles: ArticleType[]) => void;
 };
 
 export const NewsContext = createContext<NewsContextType | undefined>(
@@ -36,11 +34,10 @@ export const NewsContext = createContext<NewsContextType | undefined>(
 export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
   const [news, setNewsState] = useState<NewsSourceType>({
     guardian: [],
-
     bbc: [],
   });
 
-  const setNews = (source: keyof NewsSourceType, articles: NewsType[]) => {
+  const setNews = (source: keyof NewsSourceType, articles: ArticleType[]) => {
     setNewsState((prev) => ({
       ...prev,
       [source]: articles,
@@ -48,19 +45,40 @@ export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    const getGuardianData = async () => {
-      const articles = await getNews();
-
-      setNews(
-        "guardian",
-        articles.articles.map((article: any) => ({
-          ...article,
-          source: "guardian",
-        }))
-      );
+    const fetchGuardianArticles = async () => {
+      try {
+        const data = await getNews("The Guardian");
+        setNews(
+          "guardian",
+          data.articles.map((article: any) => ({
+            ...article,
+            source: article.newspaper?.name ?? "Unknown",
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching Guardian articles:", error);
+      }
     };
 
-    getGuardianData();
+    const fetchBBCArticles = async () => {
+      try {
+        // Fetch only BBC articles
+        const data = await getNews("BBC");
+        setNews(
+          "bbc",
+          data.articles.map((article: any) => ({
+            ...article,
+            source: article.newspaper?.name ?? "Unknown",
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching BBC articles:", error);
+      }
+    };
+
+    // Fetch articles from multiple sources as needed
+    fetchGuardianArticles();
+    fetchBBCArticles();
   }, []);
 
   useEffect(() => {

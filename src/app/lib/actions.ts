@@ -1,10 +1,14 @@
 "use server";
 
-export async function getNews() {
+export async function getNews(newspaper?: string) {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/articles`
-    );
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/api/articles`;
+    if (newspaper) {
+      const encodedName = encodeURIComponent(newspaper);
+      url += `?newspaper=${encodedName}`;
+    }
+
+    const response = await fetch(url);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -18,6 +22,7 @@ export async function getNews() {
     throw error instanceof Error ? error : new Error("Failed to fetch news");
   }
 }
+
 
 export async function getSummary() {
   const response = await fetch(

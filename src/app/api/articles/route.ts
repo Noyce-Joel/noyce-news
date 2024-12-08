@@ -1,14 +1,38 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    // Fetch all articles from the database
-    const articles = await prisma.article.findMany({
-      orderBy: { createdAt: "desc" }, // Fetch the latest articles first
-    });
+    // Parse the search parameters from the request URL
+    const { searchParams } = new URL(req.url);
+    const newspaperName = searchParams.get("newspaper");
+
+    let articles;
+
+    if (newspaperName) {
+
+      articles = await prisma.article.findMany({
+        where: {
+          newspaper: {
+            name: newspaperName,
+          },
+        },
+        orderBy: { createdAt: "desc" },
+        include: {
+          newspaper: true, // Include newspaper metadata if needed
+        },
+      });
+    } else {
+      // Fetch all articles if no newspaper is specified
+      articles = await prisma.article.findMany({
+        orderBy: { createdAt: "desc" },
+        include: {
+          newspaper: true, // Include newspaper metadata if needed
+        },
+      });
+    }
 
     console.log("Articles fetched:", articles);
 
