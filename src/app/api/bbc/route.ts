@@ -54,9 +54,16 @@ export async function GET() {
     console.log("Navigated to news page");
 
     const links = await page.evaluate(() => {
-       
-        const listItems = document.querySelectorAll('ul[role="list"] li[role="listitem"] a');
-        return Array.from(listItems).map(link => (link as HTMLAnchorElement).href);
+      const container = document.querySelector(
+        ".ssrcss-bz7v5r-HierachichalCollectionsWrapper.eqfxz1e3"
+      );
+      if (!container) return [];
+      const listItems = container.querySelectorAll(
+        "ul[role='list'] li[role='listitem'] a"
+      );
+      return Array.from(listItems).map(
+        (link) => (link as HTMLAnchorElement).href
+      );
       });
       
       console.log("links", links);
