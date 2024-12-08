@@ -66,7 +66,7 @@ export async function GET() {
       );
       });
       
-      console.log("links", links);
+
 
     console.log("links", links);
 
