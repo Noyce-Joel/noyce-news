@@ -110,14 +110,14 @@ export async function GET() {
       }
 
       let newspaper = await prisma.newspaper.findUnique({
-        where: { name: "The Guardian" },
+        where: { name: "BBC" },
       });
 
       if (!newspaper) {
         newspaper = await prisma.newspaper.create({
           data: {
-            name: "The Guardian",
-            website: "https://www.theguardian.com",
+            name: "BBC",
+            website: "https://www.bbc.co.uk/",
             country: "United Kingdom",
             createdAt: new Date(),
             updatedAt: new Date(),
