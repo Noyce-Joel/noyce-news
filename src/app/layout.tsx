@@ -7,17 +7,17 @@ import {
   SignedIn,
   UserButton,
 } from "@clerk/nextjs";
-import { Dai_Banna_SIL } from "next/font/google";
+import { Source_Serif_4 } from "next/font/google";
 import { NewsProvider } from "./state/news-provider";
 
 import { ThemeProvider } from "next-themes";
 import Login from "@/components/login";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/ui/app-sidebar";
-const daiBanna = Dai_Banna_SIL({
-  weight: "400",
+
+const sourceSerif = Source_Serif_4({
   subsets: ["latin"],
-  variable: "--font-dai-banna",
+  variable: "--font-source-serif",
 });
 
 export const metadata: Metadata = {
@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     // <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={`${daiBanna.variable} antialiased`}>
+        <body className={`${sourceSerif.variable} antialiased`}>
           <ThemeProvider attribute="class" defaultTheme="dark">
             {/* <SignedOut>
               <Login />

@@ -37,7 +37,7 @@ export function AppSidebar() {
           }} /> */}
         </div>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xl font-bold">News Freed</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xl font-bold"></SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
