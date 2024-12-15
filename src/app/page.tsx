@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-export default function Home() {
+import Headlines from "@/components/headlines";
 
-  return <div>Welcome to News Freed</div>;
+export default function Home() {
+  return (
+    <div>
+      <Headlines />
+    </div>
+  );
 }

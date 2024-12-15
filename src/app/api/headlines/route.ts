@@ -1,68 +1,51 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { HfInference } from "@huggingface/inference";
+import OpenAI from "openai";
 
 const prisma = new PrismaClient();
-export const maxDuration = 300;
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
 export async function GET() {
   try {
-
-    let article = await prisma.article.findFirst({
-      where: { summary: null }, 
+    const articles = await prisma.article.findMany({
       orderBy: { createdAt: "asc" },
-    });
-
-    while (article && !article.text) {
-      article = await prisma.article.findFirst({
-        where: { 
-          summary: null,
-          createdAt: { gt: article.createdAt }
-        },
-        orderBy: { createdAt: "asc" },
-      });
-    }
-
-    if (!article) {
-      return NextResponse.json({ message: "No articles to summarize" });
-    }
-
-    const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
-
-    const result = await hf.summarization({
-      model: "google/pegasus-large",
-      inputs: article.text,
-      parameters: {
-        max_length: 256,
-        min_length: 225,
-        temperature: 0.7,
-        top_k: 50,
-        top_p: 0.95,
-        repetition_penalty: 1.2,
+      take: 9,
+      select: {
+        headline: true,
+        standFirst: true,
       },
     });
 
-    if (!result || !result.summary_text) {
-      return NextResponse.json(
-        { error: "No summary generated" },
-        { status: 400 }
-      );
-    }
+    const combinedText = articles
+      .map((a) => `${a.headline}${a.standFirst ? `. ${a.standFirst}` : ""}`)
+      .join("\n\n");
 
-    const updatedArticle = await prisma.article.update({
-      where: { id: article.id },
-      data: { summary: result.summary_text },
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are a seasoned news anchor. Summarize the provided headlines in a '5 o’clock news' style broadcast segment, using a professional, clear, and slightly dramatic tone. Keep it concise, highlight the key stories, and convey the importance of the day’s events.",
+        },
+        {
+          role: "user",
+          content: combinedText,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 300,
     });
 
-    return NextResponse.json({
-      message: "Article summarized successfully",
-      article: updatedArticle,
-    });
+    const summary = completion.choices[0].message.content;
+
+    return NextResponse.json({ summary });
   } catch (error) {
-    console.error("Error during summarization:", error);
+    console.error("Error:", error);
     return NextResponse.json(
       {
         error:
-          error instanceof Error ? error.message : "Failed to summarize article",
+          error instanceof Error ? error.message : "Failed to generate summary",
       },
       { status: 500 }
     );
