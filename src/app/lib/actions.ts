@@ -8,6 +8,7 @@ export async function getNews(newspaper?: string) {
       url += `?newspaper=${encodedName}`;
     }
 
+    
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -38,3 +39,4 @@ export async function getSummary() {
 
   return data;
 }
+

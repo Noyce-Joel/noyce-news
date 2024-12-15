@@ -19,7 +19,6 @@ export type ArticleType = {
 
 export type NewsSourceType = {
   guardian: ArticleType[];
-  bbc: ArticleType[];
 };
 
 export type NewsContextType = {
@@ -34,7 +33,6 @@ export const NewsContext = createContext<NewsContextType | undefined>(
 export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
   const [news, setNewsState] = useState<NewsSourceType>({
     guardian: [],
-    bbc: [],
   });
 
   const setNews = (source: keyof NewsSourceType, articles: ArticleType[]) => {
@@ -60,30 +58,8 @@ export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
-    const fetchBBCArticles = async () => {
-      try {
-        // Fetch only BBC articles
-        const data = await getNews("BBC");
-        setNews(
-          "bbc",
-          data.articles.map((article: any) => ({
-            ...article,
-            source: article.newspaper?.name ?? "Unknown",
-          }))
-        );
-      } catch (error) {
-        console.error("Error fetching BBC articles:", error);
-      }
-    };
-
-    // Fetch articles from multiple sources as needed
     fetchGuardianArticles();
-    fetchBBCArticles();
   }, []);
-
-  useEffect(() => {
-    console.log("news", news);
-  }, [news]);
 
   return (
     <NewsContext.Provider value={{ news, setNews }}>
