@@ -48,10 +48,12 @@ export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
         const data = await getNews("The Guardian");
         setNews(
           "guardian",
-          data.articles.map((article: any) => ({
-            ...article,
-            source: article.newspaper?.name ?? "Unknown",
-          }))
+          data.articles
+            .slice(0, 12) // Only take the first 12 articles
+            .map((article: any) => ({
+              ...article,
+              source: article.newspaper?.name ?? "Unknown",
+            }))
         );
       } catch (error) {
         console.error("Error fetching Guardian articles:", error);
