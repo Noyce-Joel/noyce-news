@@ -13,12 +13,10 @@ export default function Headlines() {
     const fetchHeadlinesAndAudio = async () => {
       console.log("Fetching headlines...");
       try {
-        // 1. Fetch the headlines
         const headlinesData = await getHeadlines();
         console.log("Headlines fetched:", headlinesData);
         setHeadlines(headlinesData);
 
-        // 2. Fetch the TTS audio if we have a summary
         if (headlinesData?.summary) {
           const ttsResponse = await fetch("/api/tts", {
             method: "POST",
@@ -27,8 +25,6 @@ export default function Headlines() {
             },
             body: JSON.stringify({
               text: headlinesData.summary,
-              languageCode: "en-US",
-              voiceName: "en-US-Wavenet-D",
             }),
           });
 
@@ -38,9 +34,7 @@ export default function Headlines() {
           }
 
           const ttsData = await ttsResponse.json();
-          // ttsData.audioContent is base64-encoded MP3 data
 
-          // 3. Convert the base64 string to a binary array, then to a Blob
           const binary = atob(ttsData.audioContent);
           const audioBuffer = new Uint8Array(binary.length);
           for (let i = 0; i < binary.length; i++) {
@@ -49,7 +43,6 @@ export default function Headlines() {
           const blob = new Blob([audioBuffer], { type: "audio/mpeg" });
           const url = URL.createObjectURL(blob);
 
-          // Set the audio source for playback
           setAudioSrc(url);
         }
       } catch (err: any) {

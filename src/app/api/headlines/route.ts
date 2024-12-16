@@ -8,7 +8,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 export async function GET() {
   try {
     const articles = await prisma.article.findMany({
-      orderBy: { createdAt: "asc" },
+      orderBy: { createdAt: "desc" },
       take: 9,
       select: {
         headline: true,
@@ -26,7 +26,7 @@ export async function GET() {
         {
           role: "system",
           content:
-            "You are a seasoned news anchor. Summarize the provided headlines in a '5 o’clock news' style broadcast segment, using a professional, clear, and slightly dramatic tone. Keep it concise, highlight the key stories, and convey the importance of the day’s events.",
+            "You are a seasoned news anchor. Summarize the provided headlines in a '5 o'clock news' style broadcast segment, using a professional, clear, and slightly dramatic tone. Keep it concise, highlight the key stories, and convey the importance of the day's events. Each story must be it's own paragraph with a dramatic pause between each story.",
         },
         {
           role: "user",
@@ -34,7 +34,7 @@ export async function GET() {
         },
       ],
       temperature: 0.7,
-      max_tokens: 300,
+      max_tokens: 500,
     });
 
     const summary = completion.choices[0].message.content;

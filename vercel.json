@@ -4,7 +4,10 @@
         "path": "/api/guardian",
         "schedule": "0 * * * *" 
       },
-
+      {
+        "path": "/api/tech-crunch",
+        "schedule": "0 * * * *" 
+      },
       {
         "path": "/api/summarise",
         "schedule": "*/2 * * * *" 
