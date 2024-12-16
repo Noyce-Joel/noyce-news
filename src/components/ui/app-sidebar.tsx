@@ -1,5 +1,5 @@
 import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
-import { SiTheguardian } from "react-icons/si";
+import { SiTechcrunch, SiTheguardian } from "react-icons/si";
 
 import {
   Sidebar,
@@ -22,8 +22,12 @@ const items = [
     
 
   },
-  
-]
+  {
+    title: "TechCrunch",
+    url: "/tech-crunch",
+    icon: SiTechcrunch,
+  },
+];
 
 export function AppSidebar() {
   return (

@@ -19,6 +19,7 @@ export type ArticleType = {
 
 export type NewsSourceType = {
   guardian: ArticleType[];
+  techCrunch: ArticleType[];
 };
 
 export type NewsContextType = {
@@ -33,6 +34,7 @@ export const NewsContext = createContext<NewsContextType | undefined>(
 export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
   const [news, setNewsState] = useState<NewsSourceType>({
     guardian: [],
+    techCrunch: [],
   });
 
   const setNews = (source: keyof NewsSourceType, articles: ArticleType[]) => {
@@ -49,7 +51,7 @@ export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
         setNews(
           "guardian",
           data.articles
-            .slice(0, 12) // Only take the first 12 articles
+            .slice(0, 12) 
             .map((article: any) => ({
               ...article,
               source: article.newspaper?.name ?? "Unknown",
@@ -60,9 +62,25 @@ export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
-    
+    const fetchTechCrunchArticles = async () => {
+      try {
+        const data = await getNews("TechCrunch");
+        setNews(
+          "techCrunch",
+          data.articles
+            .slice(0, 12) 
+            .map((article: any) => ({
+              ...article,
+              source: article.newspaper?.name ?? "Unknown",
+            }))
+        );
+      } catch (error) {
+        console.error("Error fetching TechCrunch articles:", error);
+      }
+    };
 
     fetchGuardianArticles();
+    fetchTechCrunchArticles();
   }, []);
 
   return (

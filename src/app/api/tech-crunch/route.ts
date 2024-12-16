@@ -55,11 +55,13 @@ export async function GET() {
 
     const links = await page.evaluate(() => {
       const headlines = document.querySelector(
-        "wp-block-techcrunch-hero-package"
+        ".top-hero-package"
       );
-      const links = headlines?.querySelectorAll("a") ?? [];
-      return Array.from(links).map((link) => link.href);
+      const links = headlines?.querySelectorAll("a.loop-card__title-link") ?? [];
+      return Array.from(links).map((link) => (link as HTMLAnchorElement).href);
     });
+
+    console.log("links", links);
 
     const articles = [];
     for (const link of links) {
@@ -70,7 +72,7 @@ export async function GET() {
       console.log("Navigated to article page");
       const content = await page.evaluate(() => {
         const headline = document.querySelector(
-          ".article-hero__title.wp-block-post-title"
+          ".wp-block-post-title"
         )?.textContent;
 
         const standfirst = document.querySelector(
@@ -83,7 +85,7 @@ export async function GET() {
           .join(" ");
         const mainImg = document
           .querySelector(".wp-post-image")
-          ?.getAttribute("srcset");
+          ?.getAttribute("src");
         const sourceUrl = window.location.href;
         const tag = document.querySelector(
           ".article-hero__category"
@@ -106,7 +108,7 @@ export async function GET() {
       }
 
       let newspaper = await prisma.newspaper.findUnique({
-        where: { name: "The Guardian" },
+        where: { name: "TechCrunch" },
       });
 
       if (!newspaper) {
