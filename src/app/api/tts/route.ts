@@ -1,5 +1,13 @@
 import { NextResponse } from "next/server";
-import { S3Client, PutObjectCommand, HeadObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  PutObjectCommand,
+  HeadObjectCommand,
+  DeleteObjectCommand,
+} from "@aws-sdk/client-s3";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export const maxDuration = 300;
 
@@ -29,12 +37,16 @@ export async function POST(request: Request) {
     );
   }
 
-  const { text } = await request.json();
+  // Get the most recent headline
+  const latestHeadline = await prisma.headlines.findFirst({
+    orderBy: { createdAt: 'desc' },
+    take: 1,
+  });
 
-  if (!text) {
+  if (!latestHeadline) {
     return NextResponse.json(
-      { error: 'Missing "text" in request body' },
-      { status: 400 }
+      { error: "No headlines found" },
+      { status: 404 }
     );
   }
 
@@ -42,9 +54,7 @@ export async function POST(request: Request) {
     `https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=${token}`,
     {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         audioConfig: {
           audioEncoding: "LINEAR16",
@@ -52,9 +62,7 @@ export async function POST(request: Request) {
           pitch: 0,
           speakingRate: 0,
         },
-        input: {
-          text: text,
-        },
+        input: { text: latestHeadline.headlines },
         voice: {
           languageCode: "en-US",
           name: "en-US-Journey-D",

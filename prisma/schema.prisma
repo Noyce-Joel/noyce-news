@@ -32,3 +32,10 @@ model Article {
   newspaperId Int // Foreign key to reference the newspaper
   newspaper   Newspaper @relation(fields: [newspaperId], references: [id]) // Relation to the Newspaper model
 }
+
+model Headlines {
+  id          Int       @id @default(autoincrement()) // Unique ID for each newspaper
+  headlines   String    @db.Text
+  createdAt   DateTime  @default(now()) // Timestamp when the article was added
+  sourceUrls  String[]  @unique
+}

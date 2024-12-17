@@ -13,6 +13,7 @@ export async function GET() {
       select: {
         headline: true,
         standFirst: true,
+        sourceUrl: true,
       },
     });
 
@@ -38,8 +39,19 @@ export async function GET() {
     });
 
     const summary = completion.choices[0].message.content;
-
-    return NextResponse.json({ summary });
+    const sourceUrls = articles.map((a) => a.sourceUrl);
+    let savedHeadlines;
+    if (summary) {
+      savedHeadlines = await prisma.headlines.create({
+        data: {
+          headlines: summary,
+          sourceUrls: sourceUrls,
+        },
+      });
+    } else {
+      console.log("No summary generated");
+    }
+    return NextResponse.json({ summary, savedHeadlines });
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
