@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+export const maxDuration = 300;
 export async function POST(request: Request) {
   const token = process.env.GOOGLE_CLOUD_ACCESS_TOKEN;
 
