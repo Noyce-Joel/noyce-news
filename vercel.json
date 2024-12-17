@@ -9,6 +9,10 @@
         "schedule": "0 * * * *" 
       },
       {
+        "path": "/api/headlines",
+        "schedule": "2 * * * *" 
+      },
+      {
         "path": "/api/summarise",
         "schedule": "*/2 * * * *" 
       }
