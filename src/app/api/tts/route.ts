@@ -19,7 +19,7 @@ const s3 = new S3Client({
   },
 });
 
-export async function POST(request: Request) {
+export async function GET() {
   const token = process.env.GOOGLE_CLOUD_ACCESS_TOKEN;
   const bucketName = process.env.AWS_S3_BUCKET_NAME;
   const OBJECT_KEY = "summaries/latest-summary.wav";
