@@ -63,3 +63,21 @@ export async function getHeadlines() {
     throw error instanceof Error ? error : new Error("Failed to get headlines");
   }
 }
+
+
+export async function getHeadlinesAudio() {
+  try {
+    const response = await fetch("/api/headlines/audio");
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to fetch headlines audio");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error getting headlines audio:", error);
+    throw error instanceof Error ? error : new Error("Failed to get headlines audio");
+  }
+}
