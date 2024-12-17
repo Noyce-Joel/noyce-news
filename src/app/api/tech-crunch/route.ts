@@ -54,10 +54,9 @@ export async function GET() {
     console.log("Navigated to news page");
 
     const links = await page.evaluate(() => {
-      const headlines = document.querySelector(
-        ".top-hero-package"
-      );
-      const links = headlines?.querySelectorAll("a.loop-card__title-link") ?? [];
+      const headlines = document.querySelector(".top-hero-package");
+      const links =
+        headlines?.querySelectorAll("a.loop-card__title-link") ?? [];
       return Array.from(links).map((link) => (link as HTMLAnchorElement).href);
     });
 
@@ -87,9 +86,10 @@ export async function GET() {
           .querySelector(".wp-post-image")
           ?.getAttribute("src");
         const sourceUrl = window.location.href;
-        const tag = document.querySelector(
-          ".article-hero__category"
-        )?.textContent;
+        const tag = document.querySelector(".article-hero__category")
+          ?.textContent
+          ? document.querySelector(".article-hero__category")?.textContent
+          : document.querySelector(".wp-block-tenup-post-primary-term")?.textContent;
         return { headline, standfirst, text, mainImg, sourceUrl, tag };
       });
 

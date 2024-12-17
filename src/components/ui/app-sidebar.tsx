@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
 import { SiTechcrunch, SiTheguardian } from "react-icons/si";
 
 import {
@@ -10,7 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 import { UserButton } from "@clerk/nextjs";
 
 // Menu items.
@@ -19,8 +19,6 @@ const items = [
     title: "Guardian",
     url: "/guardian",
     icon: SiTheguardian,
-    
-
   },
   {
     title: "TechCrunch",
@@ -59,5 +57,5 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }
