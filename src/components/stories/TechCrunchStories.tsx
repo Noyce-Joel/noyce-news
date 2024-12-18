@@ -10,8 +10,9 @@ import {
 } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import Image from "next/image";
+
 import { formatDate } from "@/lib/utils";
-import { Badge } from "./ui/badge";
+import { Badge } from "../ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -19,12 +20,12 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogDescription,
-} from "./ui/dialog";
+} from "../ui/dialog";
 
 const fallbackImg = "https://via.placeholder.com/300x200";
 
-export default function GuardianStories({ news }: { news: NewsSourceType }) {
-  const articles = news.guardian || [];
+export default function TechCrunchStories({ news }: { news: NewsSourceType }) {
+  const articles = news.techCrunch || [];
   if (articles.length === 0) return <div>No articles available</div>;
 
   return (

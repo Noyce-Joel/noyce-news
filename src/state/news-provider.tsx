@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { getNews } from "../../lib/actions";
+import { getNews } from "@/lib/actions";
 
 export type ArticleType = {
   id: string;

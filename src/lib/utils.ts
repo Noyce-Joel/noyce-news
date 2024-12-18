@@ -45,4 +45,4 @@ export const cleanText = (text: string): string => {
   cleanedText = cleanedText.replace(/\\/g, "");
 
   return cleanedText;
-}
+};

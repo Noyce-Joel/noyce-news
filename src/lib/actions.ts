@@ -12,7 +12,6 @@ export async function getNews(newspaper?: string) {
       url += `?newspaper=${encodedName}`;
     }
 
-    
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -27,7 +26,6 @@ export async function getNews(newspaper?: string) {
     throw error instanceof Error ? error : new Error("Failed to fetch news");
   }
 }
-
 
 export async function getSummary() {
   try {
@@ -68,7 +66,6 @@ export async function getHeadlines() {
   }
 }
 
-
 export async function getHeadlinesAudio() {
   try {
     const response = await fetch("/api/headlines/audio");
@@ -82,14 +79,16 @@ export async function getHeadlinesAudio() {
     return data;
   } catch (error) {
     console.error("Error getting headlines audio:", error);
-    throw error instanceof Error ? error : new Error("Failed to get headlines audio");
+    throw error instanceof Error
+      ? error
+      : new Error("Failed to get headlines audio");
   }
 }
 
 export async function getLatestHeadlines() {
   const latestHeadline = await prisma.headlines.findFirst({
-    orderBy: { createdAt: 'desc' },
+    orderBy: { createdAt: "desc" },
     take: 1,
-  }); 
+  });
   return latestHeadline;
 }

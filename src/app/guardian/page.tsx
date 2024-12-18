@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import GuardianStories from "@/components/GuardianStories";
+import GuardianStories from "@/components/stories/GuardianStories";
 import { useArticles } from "../state/news-provider";
 import { useEffect } from "react";
 export default function Home() {

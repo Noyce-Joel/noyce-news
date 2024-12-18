@@ -1,17 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedOut,
-  SignedIn,
-  UserButton,
-} from "@clerk/nextjs";
+
 import { Source_Serif_4 } from "next/font/google";
-import { NewsProvider } from "./state/news-provider";
+import { NewsProvider } from "@/state/news-provider";
 
 import { ThemeProvider } from "next-themes";
-import Login from "@/components/login";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/ui/app-sidebar";
 

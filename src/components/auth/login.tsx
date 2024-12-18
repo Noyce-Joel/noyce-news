@@ -13,7 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "./ui/separator";
+import { Separator } from "../ui/separator";
 
 function LoginForm() {
   const { signIn, isLoaded } = useSignIn();
