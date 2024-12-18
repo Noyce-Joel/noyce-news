@@ -1,6 +1,5 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
 import { SiTechcrunch, SiTheguardian } from "react-icons/si";
-
+import { TbBrandGuardian } from "react-icons/tb";
 import {
   Sidebar,
   SidebarContent,
@@ -11,14 +10,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { UserButton } from "@clerk/nextjs";
 
-// Menu items.
 const items = [
   {
     title: "Guardian",
     url: "/guardian",
-    icon: SiTheguardian,
+    icon: TbBrandGuardian,
   },
   {
     title: "TechCrunch",
@@ -31,13 +28,6 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
-        <div className="absolute left-4 bottom-4">
-          {/* <UserButton appearance={{
-            elements: {
-              avatarBox: "w-9 h-9"
-            }
-          }} /> */}
-        </div>
         <SidebarGroup>
           <SidebarGroupLabel className="text-xl font-bold"></SidebarGroupLabel>
           <SidebarGroupContent>

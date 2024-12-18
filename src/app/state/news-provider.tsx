@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { getNews } from "../lib/actions";
+import { getNews } from "../../lib/actions";
 
 export type ArticleType = {
   id: string;
@@ -50,12 +50,10 @@ export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
         const data = await getNews("The Guardian");
         setNews(
           "guardian",
-          data.articles
-            .slice(0, 12) 
-            .map((article: any) => ({
-              ...article,
-              source: article.newspaper?.name ?? "Unknown",
-            }))
+          data.articles.slice(0, 12).map((article: any) => ({
+            ...article,
+            source: article.newspaper?.name ?? "Unknown",
+          }))
         );
       } catch (error) {
         console.error("Error fetching Guardian articles:", error);
@@ -67,12 +65,10 @@ export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
         const data = await getNews("TechCrunch");
         setNews(
           "techCrunch",
-          data.articles
-            .slice(0, 12) 
-            .map((article: any) => ({
-              ...article,
-              source: article.newspaper?.name ?? "Unknown",
-            }))
+          data.articles.slice(0, 12).map((article: any) => ({
+            ...article,
+            source: article.newspaper?.name ?? "Unknown",
+          }))
         );
       } catch (error) {
         console.error("Error fetching TechCrunch articles:", error);

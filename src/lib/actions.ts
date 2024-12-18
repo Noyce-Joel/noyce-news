@@ -1,5 +1,9 @@
 "use server";
 
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
 export async function getNews(newspaper?: string) {
   try {
     let url = `${process.env.NEXT_PUBLIC_API_URL}/api/articles`;
@@ -80,4 +84,12 @@ export async function getHeadlinesAudio() {
     console.error("Error getting headlines audio:", error);
     throw error instanceof Error ? error : new Error("Failed to get headlines audio");
   }
+}
+
+export async function getLatestHeadlines() {
+  const latestHeadline = await prisma.headlines.findFirst({
+    orderBy: { createdAt: 'desc' },
+    take: 1,
+  }); 
+  return latestHeadline;
 }
