@@ -10,6 +10,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import Headlines from "../the-headlines/headlines";
 
 const items = [
   {
@@ -29,7 +30,9 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xl font-bold"></SidebarGroupLabel>
+          <SidebarGroupContent className="flex flex-col justify-center items-center p-6 mb-2">
+            <Headlines />
+          </SidebarGroupContent>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (

@@ -6,7 +6,7 @@ import Headlines from "@/components/the-headlines/headlines";
 export default function Home() {
   return (
     <div>
-      <Headlines />
+      
     </div>
   );
 }

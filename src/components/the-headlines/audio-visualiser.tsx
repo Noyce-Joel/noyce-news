@@ -29,7 +29,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ className }) => {
     try {
       const ctx = new window.AudioContext();
       const analyser = ctx.createAnalyser();
-      analyser.fftSize = 64; 
+      analyser.fftSize = 64;
       analyserRef.current = analyser;
 
       const audio = audioRef.current;
@@ -137,20 +137,19 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ className }) => {
     >
       <canvas
         ref={canvasRef}
-       
         className="absolute inset-0 w-full h-full rounded-full"
       />
 
       <button
         onClick={togglePlay}
-        className="relative group z-10 p-4 mix-blend-difference rounded-full  hover:bg-white transition-colors"
+        className="relative z-10 p-4 mix-blend-difference rounded-full hover:bg-white text-white hover:text-black  transition-colors"
         type="button"
         aria-label={isPlaying ? "Pause" : "Play"}
       >
         {isPlaying ? (
-          <Pause className="w-8 h-8 text-white group-hover:text-black transition-colors" />
+          <Pause className="w-8 h-8" />
         ) : (
-          <Play className="w-8 h-8 text-white group-hover:text-black transition-colors" />
+          <Play className="w-8 h-8" />
         )}
       </button>
 

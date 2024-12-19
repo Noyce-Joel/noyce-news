@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { NewsSourceType } from "@/app/state/news-provider";
+import { ArticleType, NewsSourceType } from "@/state/news-provider";
 import {
   Card,
   CardDescription,
@@ -21,26 +21,65 @@ import {
   DialogTrigger,
   DialogDescription,
 } from "../ui/dialog";
-
+import { motion } from "framer-motion";
 const fallbackImg = "https://via.placeholder.com/300x200";
 
-export default function TechCrunchStories({ news }: { news: NewsSourceType }) {
-  const articles = news.techCrunch || [];
+export default function NewsStories({ news }: { news: ArticleType[] }) {
+  const articles = news || [];
   if (articles.length === 0) return <div>No articles available</div>;
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 20,
+        friction: 8,
+       
+      },
+      
+    },
+  };
 
   return (
-    <div className="max-w-screen-xl mx-auto px-4 py-6">
-      <header className="pb-4 mb-6 border-b border-gray-400 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">The Guardian</h1>
+    <motion.div
+      className="max-w-screen-xl mx-auto px-4 py-6"
+      initial="hidden"
+      animate="visible"
+      whileInView="whileInView"
+      variants={containerVariants}
+    >
+      <motion.header
+        className="pb-4 mb-6 border-b border-gray-400 flex justify-between items-center"
+        variants={itemVariants}
+      >
+        <h1 className="text-2xl font-bold">{news[0].source}</h1>
         <div className="text-sm text-gray-600">
           {new Date().toLocaleDateString()}
         </div>
-      </header>
+      </motion.header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {articles.map((article, idx) => (
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        variants={containerVariants}
+      >
+        {articles.map((article: ArticleType, idx: number) => (
+          <motion.div key={idx} variants={itemVariants}>
           <Dialog key={idx}>
-            <Card className="relative mb-2 p-4">
+            <Card className="relative mb-2 p-4 h-full">
               <Badge className="absolute -top-1.5 -right-1.5">
                 {article.tag.toUpperCase()}
               </Badge>
@@ -89,8 +128,9 @@ export default function TechCrunchStories({ news }: { news: NewsSourceType }) {
               </div>
             </DialogContent>
           </Dialog>
+          </motion.div>
         ))}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
