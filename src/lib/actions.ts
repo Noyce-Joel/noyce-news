@@ -92,3 +92,24 @@ export async function getLatestHeadlines() {
   });
   return latestHeadline;
 }
+
+export async function getBBCHeadlines() {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/bbc`
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to fetch wired headlines");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error getting wired headlines:", error);
+    throw error instanceof Error
+      ? error
+      : new Error("Failed to get wired headlines");
+  }
+}

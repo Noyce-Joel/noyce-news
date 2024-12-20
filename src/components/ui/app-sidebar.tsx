@@ -1,5 +1,6 @@
-import { SiTechcrunch, SiTheguardian } from "react-icons/si";
+import { SiTechcrunch, SiTheguardian, SiWireguard } from "react-icons/si";
 import { TbBrandGuardian } from "react-icons/tb";
+import { FcBbc } from "react-icons/fc";
 import {
   Sidebar,
   SidebarContent,
@@ -22,6 +23,11 @@ const items = [
     title: "TechCrunch",
     url: "/tech-crunch",
     icon: SiTechcrunch,
+  },
+  {
+    title: "BBC",
+    url: "/bbc",
+    icon: FcBbc,
   },
 ];
 

@@ -48,9 +48,7 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
         stiffness: 100,
         damping: 20,
         friction: 8,
-       
       },
-      
     },
   };
 
@@ -78,56 +76,56 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
       >
         {articles.map((article: ArticleType, idx: number) => (
           <motion.div key={idx} variants={itemVariants}>
-          <Dialog key={idx}>
-            <Card className="relative mb-2 p-4 h-full">
-              <Badge className="absolute -top-1.5 -right-1.5">
-                {article.tag.toUpperCase()}
-              </Badge>
-              <CardHeader className="p-4">
-                <DialogTrigger asChild>
-                  <CardTitle className="text-4xl font-semibold leading-tight cursor-pointer">
-                    {article.headline}
-                  </CardTitle>
-                </DialogTrigger>
-                <CardDescription className="text-sm text-gray-500">
-                  {formatDate(article.createdAt)}
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            <DialogContent className="max-w-screen-lg h-4/5 overflow-y-auto p-12 border-gray-400">
-              <DialogHeader>
-                <DialogTitle className="text-4xl font-semibold leading-tight">
-                  {article.standFirst}
-                </DialogTitle>
-                <DialogDescription className="text-sm text-gray-500 flex gap-4">
-                  <span>{formatDate(article.createdAt)}</span> |
-                  <span>{article.tag.toUpperCase()}</span>
-                </DialogDescription>
-              </DialogHeader>
-              <div className="mt-6">
-                <div className="float-right w-1/2 ml-6 mb-4">
-                  <AspectRatio ratio={16 / 9}>
-                    <Image
-                      src={article.mainImg || fallbackImg}
-                      alt={article.headline}
-                      className="rounded-lg object-cover"
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                    />
-                  </AspectRatio>
-                </div>
-                <div className="prose max-w-none">
-                  <DialogDescription className=" text-base text-white">
-                    {article.summary?.split("\n\n").map((paragraph, i) => (
-                      <span key={i} className="mb-4">
-                        {paragraph}
-                      </span>
-                    ))}
+            <Dialog key={idx}>
+              <Card className="relative mb-2 p-4 h-full">
+                <Badge className="absolute -top-1.5 -right-1.5">
+                  {article.tag.toUpperCase()}
+                </Badge>
+                <CardHeader className="p-4">
+                  <DialogTrigger asChild>
+                    <CardTitle className="text-4xl font-semibold leading-tight cursor-pointer">
+                      {article.headline}
+                    </CardTitle>
+                  </DialogTrigger>
+                  <CardDescription className="text-sm text-gray-500">
+                    {formatDate(article.createdAt)}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+              <DialogContent className="max-w-screen-lg h-4/5 overflow-y-auto p-12 border-gray-400">
+                <DialogHeader>
+                  <DialogTitle className="text-4xl font-semibold leading-tight">
+                    {article.standFirst}
+                  </DialogTitle>
+                  <DialogDescription className="text-sm text-gray-500 flex gap-4">
+                    <span>{formatDate(article.createdAt)}</span> |
+                    <span>{article.tag.toUpperCase()}</span>
                   </DialogDescription>
+                </DialogHeader>
+                <div className="mt-6">
+                  <div className="float-right w-1/2 ml-6 mb-4">
+                    <AspectRatio ratio={16 / 9}>
+                      <Image
+                        src={article.mainImg || fallbackImg}
+                        alt={article.headline}
+                        className="rounded-lg object-cover"
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                    </AspectRatio>
+                  </div>
+                  <div className="prose max-w-none">
+                    <DialogDescription className=" text-base text-white">
+                      {article.summary?.split("\n\n").map((paragraph, i) => (
+                        <span key={i} className="mb-4">
+                          {paragraph}
+                        </span>
+                      ))}
+                    </DialogDescription>
+                  </div>
                 </div>
-              </div>
-            </DialogContent>
-          </Dialog>
+              </DialogContent>
+            </Dialog>
           </motion.div>
         ))}
       </motion.div>

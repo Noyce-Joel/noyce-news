@@ -12,7 +12,7 @@ interface VideoPlayerProps {
 }
 
 export const NewsLoadingStates: FC<VideoPlayerProps> = ({
-  src = '/globe.mp4',
+  src,
   width = "40%",
   height = "auto",
   controls = false,
