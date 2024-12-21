@@ -10,13 +10,7 @@ import { useArticles } from "@/state/news-provider";
 
 export default function Home() {
   const { news } = useArticles();
-  useEffect(() => {
-    const fetchSkyHeadlines = async () => {
-      const skyHeadlines  = await getSkyHeadlines();
-      console.log(skyHeadlines);
-    };
-    fetchSkyHeadlines();
-  }, []);
+
   if (news.sky.length > 0) {
     return <NewsStories news={news.sky} />;
   }
