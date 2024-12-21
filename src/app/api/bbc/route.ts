@@ -89,10 +89,8 @@ export async function GET() {
         const imageBlock = document.querySelector(
           '[data-component="image-block"]'
         );
-        const mainImg = imageBlock
-          ? (imageBlock.querySelector("img") as HTMLImageElement)?.src
-          : (document.getElementsByClassName(".holding_image")[0] as HTMLImageElement)?.src;
-
+        const mainImg = (imageBlock?.querySelector("img") as HTMLImageElement)?.src
+        
         const sourceUrl = window.location.href;
         const tagContainer = document.querySelector(
           'nav[data-testid="navigation"]'

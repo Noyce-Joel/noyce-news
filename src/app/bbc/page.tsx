@@ -10,14 +10,8 @@ import { getBBCHeadlines } from "@/lib/actions";
 
 export default function Home() {
   const { news } = useArticles();
-  useEffect(() => {
-    const fetchBBCHeadlines = async () => {
-      const bbcHeadlines  = await getBBCHeadlines();
-      console.log(bbcHeadlines);
-    };
-    fetchBBCHeadlines();
-  }, []);
-  if (news.techCrunch.length > 0) {
+  
+  if (news.bbc.length > 0) {
     return <NewsStories news={news.techCrunch} />;
   }
   return <NewsLoadingStates />;

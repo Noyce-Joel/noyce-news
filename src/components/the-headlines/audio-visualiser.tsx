@@ -2,11 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { Play, Pause } from "lucide-react";
 import { HEADLINES_AUDIO } from "@/lib/constants";
 
-interface AudioVisualizerProps {
-  className?: string;
-}
 
-const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ className }) => {
+
+const AudioVisualizer = () => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
 
@@ -23,7 +21,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ className }) => {
     };
   }, [audioContext]);
 
-  const initializeAudio = async (): Promise<void> => {
+  const initializeAudio = async () => {
     if (audioContext) return;
 
     try {
@@ -133,7 +131,7 @@ const AudioVisualizer: React.FC<AudioVisualizerProps> = ({ className }) => {
 
   return (
     <div
-      className={`relative flex justify-center items-center w-28 h-28 mx-auto border-2 border-white bg-black rounded-full ${className}`}
+      className={`relative flex justify-center items-center w-28 h-28 mx-auto border-2 border-white bg-black rounded-full`}
     >
       <canvas
         ref={canvasRef}
