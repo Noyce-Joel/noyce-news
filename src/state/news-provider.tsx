@@ -21,6 +21,7 @@ export type NewsSourceType = {
   guardian: ArticleType[];
   techCrunch: ArticleType[];
   bbc: ArticleType[];
+  sky: ArticleType[];
 };
 
 export type NewsContextType = {
@@ -37,6 +38,7 @@ export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
     guardian: [],
     techCrunch: [],
     bbc: [],
+    sky: [],
   });
 
   const setNews = (source: keyof NewsSourceType, articles: ArticleType[]) => {
@@ -82,6 +84,21 @@ export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
         const data = await getNews("BBC UK");
         setNews(
           "bbc",
+          data.articles.slice(0, 12).map((article: any) => ({
+            ...article,
+            source: article.newspaper?.name ?? "Unknown",
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching TechCrunch articles:", error);
+      }
+    };
+
+    const fetchSkyArticles = async () => {
+      try {
+        const data = await getNews("Sky News UK");
+        setNews(
+          "sky",
           data.articles.slice(0, 12).map((article: any) => ({
             ...article,
             source: article.newspaper?.name ?? "Unknown",

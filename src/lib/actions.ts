@@ -93,10 +93,10 @@ export async function getLatestHeadlines() {
   return latestHeadline;
 }
 
-export async function getBBCHeadlines() {
+export async function getSkyHeadlines() {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/bbc`
+      `${process.env.NEXT_PUBLIC_API_URL}/api/sky`
     );
 
     if (!response.ok) {

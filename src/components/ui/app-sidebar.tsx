@@ -1,4 +1,4 @@
-import { SiTechcrunch, SiTheguardian, SiWireguard } from "react-icons/si";
+import { SiSky, SiTechcrunch, SiTheguardian, SiWireguard } from "react-icons/si";
 import { TbBrandGuardian } from "react-icons/tb";
 import { FcBbc } from "react-icons/fc";
 import {
@@ -28,6 +28,11 @@ const items = [
     title: "BBC",
     url: "/bbc",
     icon: FcBbc,
+  },
+  {
+    title: "Sky",
+    url: "/sky",
+    icon: SiSky,
   },
 ];
 
