@@ -22,7 +22,6 @@ import {
   DialogDescription,
 } from "../ui/dialog";
 import { motion } from "framer-motion";
-const fallbackImg = "https://via.placeholder.com/300x200";
 
 export default function NewsStories({ news }: { news: ArticleType[] }) {
   const articles = news || [];
@@ -103,17 +102,19 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
                   </DialogDescription>
                 </DialogHeader>
                 <div className="mt-6">
-                  <div className="float-right w-1/2 ml-6 mb-4">
-                    <AspectRatio ratio={16 / 9}>
-                      <Image
-                        src={article.mainImg || fallbackImg}
-                        alt={article.headline}
-                        className="rounded-lg object-cover"
-                        fill
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                      />
-                    </AspectRatio>
-                  </div>
+                  {article.mainImg && (
+                    <div className="float-right w-1/2 ml-6 mb-4">
+                      <AspectRatio ratio={16 / 9}>
+                        <Image
+                          src={article.mainImg}
+                          alt={article.headline}
+                          className="rounded-lg object-cover"
+                          fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                        />
+                      </AspectRatio>
+                    </div>
+                  )}
                   <div className="prose max-w-none">
                     <DialogDescription className=" text-base text-white">
                       {article.summary?.split("\n\n").map((paragraph, i) => (

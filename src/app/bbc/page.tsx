@@ -12,7 +12,7 @@ export default function Home() {
   const { news } = useArticles();
   
   if (news.bbc.length > 0) {
-    return <NewsStories news={news.techCrunch} />;
+    return <NewsStories news={news.bbc} />;
   }
   return <NewsLoadingStates />;
 }
