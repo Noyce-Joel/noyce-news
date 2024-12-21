@@ -20,14 +20,17 @@ export async function GET() {
     const combinedText = articles
       .map((a) => `${a.headline}${a.standFirst ? `. ${a.standFirst}` : ""}`)
       .join("\n\n");
-
+    const currentTime = new Date().toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
           role: "system",
           content:
-            "You are a seasoned news anchor. Summarize the provided headlines in a '5 o'clock news' style broadcast segment, using a professional, clear, and slightly dramatic tone. Keep it concise, highlight the key stories, and convey the importance of the day's events. Each story must be it's own paragraph with a dramatic pause between each story.",
+            `You are a seasoned news anchor delivering the headlines at ${currentTime} for a news broadcast. Summarize the provided headlines with a clear, professional, and authoritative tone. Your delivery should be concise but impactful, using dramatic pauses between each story to build anticipation and emphasize significance. Add explicit pauses at the end of each sentence by including ellipses (...) or directives like [pause] to ensure proper timing in text-to-speech conversion. Focus on key facts, avoid unnecessary details, and highlight the gravity or excitement of the day's major events. Each headline should feel like part of a cohesive broadcast, guiding the viewer through the day's top stories with the urgency and poise expected from primetime news. Conclude with a memorable sign-off that leaves the audience informed and intrigued.`
         },
         {
           role: "user",
