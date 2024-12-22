@@ -31,8 +31,7 @@ export async function GET() {
       messages: [
         {
           role: "system",
-          content:
-            `You are a seasoned news anchor. Summarize the provided headlines for a ${currentTime} broadcast segment, using a professional, clear, and slightly dramatic tone. Keep it concise, highlight the key stories, and convey the importance of the day's events. Each story must be it's own paragraph with a dramatic pause between each story. Conclude with a memorable sign-off that leaves the audience informed and intrigued.`,
+          content: `You are a seasoned news anchor. Summarize the provided headlines for a ${currentTime} broadcast segment, using a professional, clear, and slightly dramatic tone. Keep it concise, highlight the key stories, and convey the importance of the day's events. Each story must be it's own paragraph with a dramatic pause between each story. Conclude with a memorable sign-off that leaves the audience informed and intrigued.`,
         },
         {
           role: "user",

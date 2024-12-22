@@ -112,6 +112,7 @@ export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
     fetchGuardianArticles();
     fetchTechCrunchArticles();
     fetchBBCArticles();
+    fetchSkyArticles();
   }, []);
 
   return (

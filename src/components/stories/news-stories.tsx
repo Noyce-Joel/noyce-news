@@ -22,6 +22,8 @@ import {
   DialogDescription,
 } from "../ui/dialog";
 import { motion } from "framer-motion";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 export default function NewsStories({ news }: { news: ArticleType[] }) {
   const articles = news || [];
@@ -91,19 +93,30 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
                   </CardDescription>
                 </CardHeader>
               </Card>
-              <DialogContent className="max-w-screen-lg h-4/5 overflow-y-auto p-12 border-gray-400">
+              <DialogContent className="max-w-screen-lg h-[95vh] overflow-y-auto p-12 border-gray-400">
                 <DialogHeader>
-                  <DialogTitle className="text-4xl font-semibold leading-tight">
-                    {article.standFirst}
+                  <DialogTitle className="text-4xl font-semibold leading-tight mb-4">
+                    {article.standFirst}{" "}
                   </DialogTitle>
-                  <DialogDescription className="text-sm text-gray-500 flex gap-4">
+                  <DialogDescription className="text-sm text-gray-500 flex gap-4 items-center">
                     <span>{formatDate(article.createdAt)}</span> |
-                    <span>{article.tag.toUpperCase()}</span>
+                    <span>{article.tag.toUpperCase()}</span> |
+                    <span>{article.source}</span> |
+                    <Button variant="outline" className="">
+                      <Link target="_blank" href={article.sourceUrl}>
+                        Read More
+                      </Link>
+                    </Button>
                   </DialogDescription>
                 </DialogHeader>
-                <div className="mt-6">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="mt-4"
+                >
                   {article.mainImg && (
-                    <div className="float-right w-1/2 ml-6 mb-4">
+                    <div className="float-right w-[38vw] ml-6 mb-4">
                       <AspectRatio ratio={16 / 9}>
                         <Image
                           src={article.mainImg}
@@ -111,12 +124,13 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
                           className="rounded-lg object-cover"
                           fill
                           sizes="(max-width: 768px) 100vw, 50vw"
+                          priority={true}
                         />
                       </AspectRatio>
                     </div>
                   )}
                   <div className="prose max-w-none">
-                    <DialogDescription className=" text-base text-white">
+                    <DialogDescription className=" text-base text-white text-justify">
                       {article.summary?.split("\n\n").map((paragraph, i) => (
                         <span key={i} className="mb-4">
                           {paragraph}
@@ -124,7 +138,7 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
                       ))}
                     </DialogDescription>
                   </div>
-                </div>
+                </motion.div>
               </DialogContent>
             </Dialog>
           </motion.div>

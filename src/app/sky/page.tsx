@@ -3,9 +3,7 @@
 
 import { NewsLoadingStates } from "@/components/loading/news-loading-states";
 import NewsStories from "@/components/stories/news-stories";
-import { getSkyHeadlines } from "@/lib/actions";
 
-import { useEffect } from "react";
 import { useArticles } from "@/state/news-provider";
 
 export default function Home() {

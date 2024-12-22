@@ -21,7 +21,10 @@ export default function Headlines() {
       }
     };
     fetchHeadlinesAndAudio();
+
   }, []);
+
+ 
 
   return (
     <div className="relative">

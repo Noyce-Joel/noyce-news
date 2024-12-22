@@ -113,3 +113,20 @@ export async function getSkyHeadlines() {
       : new Error("Failed to get wired headlines");
   }
 }
+
+export async function getArticleFromSourceUrl(sourceUrl: string) {
+  const article = await prisma.article.findFirst({
+    where: { sourceUrl },
+    select: {
+      sourceUrl: true,
+      headline: true,
+      summary: true,
+      standFirst: true,
+      mainImg: true,
+      createdAt: true,
+      newspaper: true,
+      tag: true
+    },
+  });
+  return article;
+}
