@@ -117,17 +117,17 @@ export default function HeadlinesSourceUrls({
                     <div
                       key={article.sourceUrl}
                       onClick={() => setSelectedArticle(article)}
-                      className="flex items-center gap-2 rounded-md p-2 hover:bg-accent"
+                      className="flex cursor-pointer items-center gap-2 rounded-md p-2 hover:bg-accent overflow-hidden overflow-y-scroll"
                     >
                       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
                         <Icon className="h-4 w-4" />
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-sm font-medium">
-                          {source?.title || "News Source"}
-                        </span>
-                        <span className="text-xs text-muted-foreground truncate max-w-[200px]">
+                        <span className="text-sm font-medium truncate  max-w-[200px]">
                           {article.headline}
+                        </span>
+                        <span className="text-xs text-muted-foreground capitalize">
+                         {article.tag}
                         </span>
                       </div>
                     </div>

@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { FC } from "react";
 
 interface VideoPlayerProps {
@@ -12,32 +13,38 @@ interface VideoPlayerProps {
 }
 
 export const NewsLoadingStates: FC<VideoPlayerProps> = ({
-  src,
-  width = "40%",
+  src = "/globe.mov",
+  width = "10%",
   height = "auto",
   controls = false,
   autoPlay = true,
   muted = false,
-  loop = false
+  loop = false,
 }) => {
   return (
-    <div className="flex justify-center items-center h-screen w-screen">
+    <motion.div
+      className="flex flex-col justify-center items-center h-screen w-screen"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+    >
       <video
         src={src}
         width={width}
         height={height}
-        controls={controls}
+
         autoPlay={autoPlay}
         muted={muted}
         loop={loop}
         playsInline
         onLoadedMetadata={(e) => {
-          e.currentTarget.currentTime = 2;
+          e.currentTarget.currentTime = 1;
         }}
-        className="opacity-80"
+        className=" invert grayscale"
       >
         Your browser does not support the video tag.
       </video>
-    </div>
+      <div className="bg-black w-full h-2 -mt-2 z-50"></div>
+    </motion.div>
   );
 };

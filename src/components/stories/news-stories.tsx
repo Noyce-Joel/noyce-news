@@ -21,7 +21,7 @@ import {
   DialogTrigger,
   DialogDescription,
 } from "../ui/dialog";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "../ui/button";
 import Link from "next/link";
 
@@ -35,6 +35,12 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
       transition: {
         staggerChildren: 0.1,
         delayChildren: 0.1,
+      },
+    },
+    exit: {
+      opacity: 0,
+      transition: {
+        duration: 0.5,
       },
     },
   };
@@ -51,15 +57,24 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
         friction: 8,
       },
     },
+    exit: {
+      opacity: 0,
+      y: 40,
+      transition: {
+        duration: 0.5,
+      },
+    },
   };
 
   return (
-    <motion.div
-      className="max-w-screen-xl mx-auto px-4 py-6"
-      initial="hidden"
-      animate="visible"
-      whileInView="whileInView"
-      variants={containerVariants}
+    <AnimatePresence mode="wait">
+      <motion.div
+        className="max-w-screen-xl mx-auto px-4 py-6"
+        initial="hidden"
+        animate="visible"
+        whileInView="whileInView"
+        exit="exit"
+        variants={containerVariants}
     >
       <motion.header
         className="pb-4 mb-6 border-b border-gray-400 flex justify-between items-center"
@@ -79,7 +94,7 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
           <motion.div key={idx} variants={itemVariants}>
             <Dialog key={idx}>
               <Card className="relative mb-2 p-4 h-full">
-                <Badge className="absolute -top-1.5 -right-1.5">
+                <Badge className="absolute -top-1.5 -left-1.5">
                   {article.tag.toUpperCase()}
                 </Badge>
                 <CardHeader className="p-4">
@@ -143,7 +158,8 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
             </Dialog>
           </motion.div>
         ))}
+        </motion.div>
       </motion.div>
-    </motion.div>
+    </AnimatePresence>
   );
 }
