@@ -53,15 +53,6 @@ export async function GET() {
     });
     console.log("Navigated to news page");
 
-    const cookiesButton = await page.evaluate(() => {
-      const button = document.querySelector("#onetrust-accept-btn-handler");
-      return button ? button : null;
-    });
-
-    if (cookiesButton) {
-      await page.click("#onetrust-accept-btn-handler");
-    }
-
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     await page.$eval('button[name="view"][value="list"]', (button) =>
