@@ -27,7 +27,7 @@ const AudioVisualizer = () => {
     try {
       const ctx = new window.AudioContext();
       const analyser = ctx.createAnalyser();
-      analyser.fftSize = 64;
+      analyser.fftSize = 128;
       analyserRef.current = analyser;
 
       const audio = audioRef.current;

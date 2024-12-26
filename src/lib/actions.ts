@@ -95,9 +95,7 @@ export async function getLatestHeadlines() {
 
 export async function getSkyHeadlines() {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/sky`
-    );
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/sky`);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -114,6 +112,27 @@ export async function getSkyHeadlines() {
   }
 }
 
+export async function getArsTechnica() {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/ars-technica`
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to fetch Ars Technica");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error getting Ars Technica:", error);
+    throw error instanceof Error
+      ? error
+      : new Error("Failed to get Ars Technica");
+  }
+}
+
 export async function getArticleFromSourceUrl(sourceUrl: string) {
   const article = await prisma.article.findFirst({
     where: { sourceUrl },
@@ -125,7 +144,7 @@ export async function getArticleFromSourceUrl(sourceUrl: string) {
       mainImg: true,
       createdAt: true,
       newspaper: true,
-      tag: true
+      tag: true,
     },
   });
   return article;

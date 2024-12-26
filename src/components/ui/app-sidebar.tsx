@@ -3,9 +3,11 @@ import {
   SiTechcrunch,
   SiTheguardian,
   SiWireguard,
+  SiArstechnica
 } from "react-icons/si";
 import { TbBrandGuardian, TbSphere } from "react-icons/tb";
 import { FcBbc } from "react-icons/fc";
+
 import {
   Sidebar,
   SidebarContent,
@@ -39,9 +41,9 @@ const items = [
     icon: FcBbc,
   },
   {
-    title: "Sky",
-    url: "/sky",
-    icon: SiSky,
+    title: "Ars Technica",
+    url: "/ars-technica",
+    icon: SiArstechnica,
   },
 ];
 

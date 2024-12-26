@@ -13,38 +13,40 @@ interface VideoPlayerProps {
 }
 
 export const NewsLoadingStates: FC<VideoPlayerProps> = ({
-  src = "/globe.mov",
-  width = "10%",
+  src = "/globe-2.mov",
+  width = "100%",
   height = "auto",
   controls = false,
   autoPlay = true,
   muted = false,
-  loop = false,
+  loop = true,
 }) => {
   return (
     <motion.div
       className="flex flex-col justify-center items-center h-screen w-screen"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
+      transition={{ duration: 0.5 }}
     >
-      <video
-        src={src}
-        width={width}
-        height={height}
-
-        autoPlay={autoPlay}
-        muted={muted}
-        loop={loop}
-        playsInline
-        onLoadedMetadata={(e) => {
-          e.currentTarget.currentTime = 1;
-        }}
-        className=" invert grayscale"
-      >
-        Your browser does not support the video tag.
-      </video>
-      <div className="bg-black w-full h-2 -mt-2 z-50"></div>
+      <div className="relative flex flex-col justify-center items-center  p-5 rounded-3xl">
+        <video
+          src={src}
+          width={width}
+          height={height}
+          autoPlay={autoPlay}
+          muted={muted}
+          loop={loop}
+          playsInline
+          onLoadedMetadata={(e) => {
+            e.currentTarget.currentTime = 1;
+          }}
+          className="invert grayscale lg:w-32 w-44 h-auto bg-black overflow-hidden" 
+          style={{ clipPath: 'inset(0 0 10px 0)' }}
+        >
+          Your browser does not support the video tag.
+        </video>
+        
+      </div>
     </motion.div>
   );
 };
