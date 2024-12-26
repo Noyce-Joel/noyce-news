@@ -94,9 +94,25 @@ export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
+    const fetchArsTechnicaArticles = async () => {
+      try {
+        const data = await getNews("Ars Technica");
+        setNews(
+          "arsTechnica",
+          data.articles.slice(0, 12).map((article: any) => ({
+            ...article,
+            source: article.newspaper?.name ?? "Unknown",
+          }))
+        );
+      } catch (error) {
+        console.error("Error fetching TechCrunch articles:", error);
+      }
+    };
+
     fetchGuardianArticles();
     fetchTechCrunchArticles();
     fetchBBCArticles();
+    fetchArsTechnicaArticles();
 
   }, []);
 
