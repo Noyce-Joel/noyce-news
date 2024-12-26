@@ -53,9 +53,14 @@ export async function GET() {
     });
     console.log("Navigated to news page");
 
-    await page.waitForSelector("#onetrust-accept-btn-handler");
+    const cookiesButton = await page.evaluate(() => {
+      const button = document.querySelector("#onetrust-accept-btn-handler");
+      return button ? button : null;
+    });
 
-    await page.click("#onetrust-accept-btn-handler");
+    if (cookiesButton) {
+      await page.click("#onetrust-accept-btn-handler");
+    }
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -87,14 +92,16 @@ export async function GET() {
         const headline = document.querySelector("header h1")?.textContent;
 
         const standfirst = document.querySelector("header p")?.textContent;
-        const body = document.querySelectorAll(".post-content.post-content-double");
-        const paragraphs = Array.from(body).flatMap(section => 
+        const body = document.querySelectorAll(
+          ".post-content.post-content-double"
+        );
+        const paragraphs = Array.from(body).flatMap((section) =>
           Array.from(section.querySelectorAll("p"))
         );
-        const text = paragraphs
-          .map((p) => p.textContent)
-          .join(" ");
-        const mainImgContainer = document.querySelector(".ars-lightbox-item img");
+        const text = paragraphs.map((p) => p.textContent).join(" ");
+        const mainImgContainer = document.querySelector(
+          ".ars-lightbox-item img"
+        );
         const mainImg = mainImgContainer?.getAttribute("src");
 
         const sourceUrl = window.location.href;
