@@ -19,23 +19,32 @@ model Newspaper {
 }
 
 model Article {
-  id          Int       @id @default(autoincrement()) // Unique ID for each article
-  headline    String    @db.Text // Headline of the article
+  id          Int        @id @default(autoincrement()) // Unique ID for each article
+  headline    String     @db.Text // Headline of the article
   mainImg     String? // URL of the main image (optional)
-  standFirst  String?   @db.Text // Subheadline or standfirst (optional)
-  text        String    @db.Text // Full text of the article
-  summary     String?   @db.Text // Summary of the article (optional)
-  sourceUrl   String    @unique // URL of the original article (unique)
+  standFirst  String?    @db.Text // Subheadline or standfirst (optional)
+  text        String     @db.Text // Full text of the article
+  summary     String?    @db.Text // Summary of the article (optional)
+  sourceUrl   String     @unique // URL of the original article (unique)
   tag         String // Tag for categorizing the article
-  createdAt   DateTime  @default(now()) // Timestamp when the article was added
-  updatedAt   DateTime  @updatedAt // Automatically updates on any changes
+  createdAt   DateTime   @default(now()) // Timestamp when the article was added
+  updatedAt   DateTime   @updatedAt // Automatically updates on any changes
   newspaperId Int // Foreign key to reference the newspaper
-  newspaper   Newspaper @relation(fields: [newspaperId], references: [id]) // Relation to the Newspaper model
+  newspaper   Newspaper  @relation(fields: [newspaperId], references: [id]) // Relation to the Newspaper model
+  keyPoints   KeyPoints? // Changed to optional single relation
 }
 
 model Headlines {
-  id          Int       @id @default(autoincrement()) // Unique ID for each newspaper
-  headlines   String    @db.Text
-  createdAt   DateTime  @default(now()) // Timestamp when the article was added
-  sourceUrls  String[]  @unique
+  id         Int      @id @default(autoincrement()) // Unique ID for each newspaper
+  headlines  String   @db.Text
+  createdAt  DateTime @default(now()) // Timestamp when the article was added
+  sourceUrls String[] @unique
+}
+
+model KeyPoints {
+  id        Int      @id @default(autoincrement()) // Unique ID for each newspaper
+  keyPoints String   @db.Text
+  createdAt DateTime @default(now()) // Timestamp when the article was added
+  article   Article  @relation(fields: [articleId], references: [id])
+  articleId Int      @unique // Added unique constraint
 }
