@@ -42,6 +42,7 @@ CREATE TABLE "KeyPoints" (
     "id" SERIAL NOT NULL,
     "keyPoints" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "articleId" INTEGER NOT NULL,
 
     CONSTRAINT "KeyPoints_pkey" PRIMARY KEY ("id")
 );
@@ -58,5 +59,11 @@ CREATE UNIQUE INDEX "Article_sourceUrl_key" ON "Article"("sourceUrl");
 -- CreateIndex
 CREATE UNIQUE INDEX "Headlines_sourceUrls_key" ON "Headlines"("sourceUrls");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "KeyPoints_articleId_key" ON "KeyPoints"("articleId");
+
 -- AddForeignKey
 ALTER TABLE "Article" ADD CONSTRAINT "Article_newspaperId_fkey" FOREIGN KEY ("newspaperId") REFERENCES "Newspaper"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "KeyPoints" ADD CONSTRAINT "KeyPoints_articleId_fkey" FOREIGN KEY ("articleId") REFERENCES "Article"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
