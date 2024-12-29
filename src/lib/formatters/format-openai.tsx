@@ -10,18 +10,12 @@ export function formatOpenAIMarkdown(text: string) {
     // Extract header and content
     const headerMatch = section.match(/^\*\*([^*]+)\*\*:/);
     if (!headerMatch) return <p key={index}>{section}</p>;
-    
 
     const header = headerMatch[1];
-    const contentStart = section.replace(/^\*\*[^*]+\*\*:/, "").trim();
-    const content = contentStart.replace(/^\*\*Key Points:\*\*\s*-\s*(\r?\n)?/i, "");
-    // Remove "Key Points:" header if present
-    if (header.toLowerCase() === "**Key Points:** -") {
-      return <p key={index}>{content}</p>;
-    }
+    const content = section.replace(/^\*\*[^*]+\*\*:/, "").trim();
 
     // Handle bullet points
-    if (content.includes("•") ) {
+    if (content.includes("•") || content.includes("-")) {
       const bullets = content
         .split(/[•-]/)
         .filter(Boolean)

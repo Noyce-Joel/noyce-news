@@ -154,6 +154,7 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
                     </div>
                   )}
                   <div className="prose max-w-none">
+                    Summary:
                     <DialogDescription className=" text-base text-white text-justify">
                       {article.summary?.split("\n\n").map((paragraph, i) => (
                         <span key={i} className="mb-4">
