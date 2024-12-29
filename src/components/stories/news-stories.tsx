@@ -24,7 +24,8 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { formatOpenAIMarkdown } from "@/lib/formatters/format-openai";
+import FormatOpenAIMarkdown from "@/lib/formatters/format-openai";
+
 
 export default function NewsStories({ news }: { news: ArticleType[] }) {
   const articles = news || [];
@@ -149,7 +150,7 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
                   {article.keyPoints && article.keyPoints.keyPoints && (
                     <div className="prose max-w-none">
                       <div className=" text-base text-white text-justify">
-                        {formatOpenAIMarkdown(article.keyPoints.keyPoints)}
+                        <FormatOpenAIMarkdown markdownContent={article.keyPoints.keyPoints} />
                       </div>
                     </div>
                   )}
