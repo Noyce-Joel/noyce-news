@@ -145,6 +145,7 @@ export async function getArticleFromSourceUrl(sourceUrl: string) {
       createdAt: true,
       newspaper: true,
       tag: true,
+      keyPoints: true,
     },
   });
   return article;

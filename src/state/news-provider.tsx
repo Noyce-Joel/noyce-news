@@ -15,7 +15,14 @@ export type ArticleType = {
   updatedAt: string;
   sourceUrl: string;
   source: string;
-  keyPoints: string | null;
+  keyPoints: {
+    id: string;
+    articleId: string;
+    createdAt: string;
+    updatedAt: string;
+    article: ArticleType;
+    keyPoints: string | null
+  };
 };
 
 export type NewsSourceType = {

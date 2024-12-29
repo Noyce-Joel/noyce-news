@@ -21,7 +21,8 @@ export async function GET(req: NextRequest) {
         },
         orderBy: { createdAt: "desc" },
         include: {
-          newspaper: true, // Include newspaper metadata if needed
+          newspaper: true,
+          keyPoints: true,
         },
       });
     } else {

@@ -67,9 +67,7 @@ export default function HeadlinesSourceUrls({
     fetchArticles();
   }, [sourceUrls]);
 
-  useEffect(() => {
-    console.log("articles", articles);
-  }, [articles]);
+  
   return (
     <>
       <Popover>

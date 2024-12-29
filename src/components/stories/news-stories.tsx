@@ -24,9 +24,11 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { formatOpenAIMarkdown } from "@/lib/formatters/format-openai";
 
 export default function NewsStories({ news }: { news: ArticleType[] }) {
   const articles = news || [];
+  console.log("articles", articles);
   if (articles.length === 0) return <div>No articles available</div>;
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -131,7 +133,7 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
                   className="mt-4"
                 >
                   {article.mainImg && (
-                    <div className="float-right w-[38vw] ml-6 mb-4">
+                    <div className="float-right w-[18vw] ml-6 mb-4">
                       <AspectRatio ratio={16 / 9}>
                         <Image
                           src={article.mainImg}
@@ -142,6 +144,13 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
                           priority={true}
                         />
                       </AspectRatio>
+                    </div>
+                  )}
+                  {article.keyPoints && article.keyPoints.keyPoints && (
+                    <div className="prose max-w-none">
+                      <div className=" text-base text-white text-justify">
+                        {formatOpenAIMarkdown(article.keyPoints.keyPoints)}
+                      </div>
                     </div>
                   )}
                   <div className="prose max-w-none">
