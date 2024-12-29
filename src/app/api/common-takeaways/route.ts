@@ -72,7 +72,8 @@ Your task:
       response_format: zodResponseFormat(KeyPointsSchema, "key_points"),
     });
 
-    const summary = completion.choices[0].message.content;
+    const response = completion.choices[0].message.content;
+    const summary = response ? JSON.parse(response) : null;
 
     if (summary) {
       const result = await prisma.$transaction(async (tx) => {

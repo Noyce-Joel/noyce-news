@@ -68,7 +68,7 @@ Your task:
     });
 
     const response = completion.choices[0].message.content;
-    const summary = response ? cleanJsonString(response) : null;
+    const summary = response ? JSON.parse(response) : null;
 
     if (summary) {
       const result = await prisma.$transaction(async (tx) => {
