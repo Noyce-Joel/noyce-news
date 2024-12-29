@@ -38,7 +38,7 @@ Moonfire invests in scalable, capital-efficient software solutions that leverage
    - Any mention of funding events, product launches, partnerships, acquisitions, or regulatory changes, especially those relevant to scaling capital-efficient software businesses.
    - Any references to founder qualities or company strategies that align with Moonfire's approach (e.g., mission-driven, data mastery, superior product quality).
    - Potential risks or competition from incumbents and how the startup (if any) might defend itself (e.g., unique data moats).
-3. **Format** your response using the following structure:
+3. Format your response using the following structure:
    - **Key Points** (3–7 bullets focusing on what VCs at Moonfire care about).
    
 4. **Maintain a professional tone** and tailor all insights to the perspective of a venture capital firm (Moonfire) looking to invest in category-defining companies.`;
