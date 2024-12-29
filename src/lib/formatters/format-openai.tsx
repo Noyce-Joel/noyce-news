@@ -15,7 +15,7 @@ export function formatOpenAIMarkdown(text: string) {
     const content = section.replace(/^\*\*[^*]+\*\*:/, "").trim();
 
     // Handle bullet points
-    if (content.includes("•") || content.includes("-")) {
+    if (content.includes("•") ) {
       const bullets = content
         .split(/[•-]/)
         .filter(Boolean)
