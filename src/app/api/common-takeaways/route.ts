@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function GET() {
+    
   try {
     const article = await prisma.article.findFirst({
       where: {
