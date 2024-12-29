@@ -42,7 +42,7 @@ export async function GET() {
                     For breaking news: Emphasize who, what, when, where, why, and how.
                     Format your response using the following structure:
 Headline: A clear, concise title capturing the essence of the article.
-Key Points (3–5 bullets focusing on on the key points).
+Key Points: 3–5 bullets focusing on on the key points.
 
         `,
         },
