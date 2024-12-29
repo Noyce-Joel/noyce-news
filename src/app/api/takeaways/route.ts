@@ -38,15 +38,15 @@ Your task:
    - Any mention of funding events, product launches, partnerships, acquisitions, or regulatory changes, especially those relevant to scaling capital-efficient software businesses.
    - Any references to founder qualities or company strategies that align with Moonfire's approach (e.g., mission-driven, data mastery, superior product quality).
    - Potential risks or competition from incumbents and how the startup (if any) might defend itself (e.g., unique data moats).
-3. Format your response using the following structure:
-   {
+3. Format your response as JSON using the following structure:
+
     "key_points": [
         {
             "title": "string",  // A brief, descriptive title for the key point
             "content": "string" // Detailed explanation of the key point
         }
     ]
-}
+
    
 4. Maintain a professional tone and tailor all insights to the perspective of a venture capital firm (Moonfire) looking to invest in category-defining companies.`;
 

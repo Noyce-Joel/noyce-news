@@ -45,15 +45,15 @@ Your task:
    - Key figures or organizations involved and their roles.  
    - Broader context or background that explains the significance of the story.  
    - Potential impact or next steps – what could happen next or how the situation may evolve.  
-3. Format your response using the following structure:  
-   {
+3. Format your response as JSON using the following structure:  
+   
     "key_points": [
         {
             "title": "string",  // A brief, descriptive title for the key point
             "content": "string" // Detailed explanation of the key point
         }
     ]
-}
+
    
 4. Maintain a neutral, professional tone and ensure the summary distills the article into its most essential components, making it easier for journalists to report on the story quickly and accurately.  
 
