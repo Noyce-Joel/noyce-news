@@ -5,12 +5,20 @@ import OpenAI from "openai";
 const prisma = new PrismaClient();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const id = await request.json();
-    const article = await prisma.article.findUnique({
-      where: { id: id },
+    
+    const article = await prisma.article.findFirst({
+      where: {
+        keyPoints: null
+      },
+      select: {
+        id: true,
+        text: true
+      }
     });
+
+    
 
     const text = article?.text;
     if (!text) {
@@ -33,15 +41,11 @@ export async function GET(request: NextRequest) {
            - Any mention of funding events, product launches, partnerships, acquisitions, or regulatory changes, especially those relevant to scaling capital-efficient            software businesses.
            - Any references to founder qualities or company strategies that align with Moonfire’s approach (e.g., mission-driven, data mastery, superior product quality).
            - Potential risks or competition from incumbents and how the startup (if any) might defend itself (e.g., unique data moats).
-
         3. **Format** your response using the following structure:
            - **Headline**: A clear, concise title capturing the essence of the article.
            - **Key Points** (3–5 bullets focusing on what VCs at Moonfire care about).
-           - **Moonfire Investor Lens**: A short paragraph on how this ties back to our philosophy of Access, Efficiency, Quality, and Data, and whether there’s a         potential for exponential growth, market disruption, or strong founder traits.
-           - **Impact Tags** (emoji + short label, e.g., 🚀 Funding & Growth, ⚠️ Regulation, 💡 AI Trend, etc.).
-           - If available, include a "**Read Full Article →**" hyperlink placeholder at the end.
-                
-        4. **Maintain a professional tone** and tailor all insights to the perspective of a venture capital firm (Moonfire) looking to invest in category-defining         companies.
+           
+        4. **Maintain a professional tone** and tailor all insights to the perspective of a venture capital firm (Moonfire) looking to invest in category-defining companies.
 
         The user will provide you with a fintech news article. Please read it carefully and follow the instructions.
         `,
@@ -58,20 +62,20 @@ export async function GET(request: NextRequest) {
     const summary = completion.choices[0].message.content;
 
     if (summary) {
-      // Create keypoints and update article in a transaction
+
       const result = await prisma.$transaction(async (tx) => {
-        // Create new keypoints
+
         const keyPoints = await tx.keyPoints.create({
           data: {
             keyPoints: summary,
-            articleId: id, // Link to the article
+            articleId: article?.id,
           },
         });
 
         return keyPoints;
       });
 
-      return NextResponse.json({ result });
+      return NextResponse.json({ keyPoints: result.keyPoints });
     }
 
     return NextResponse.json(

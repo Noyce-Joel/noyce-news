@@ -149,3 +149,10 @@ export async function getArticleFromSourceUrl(sourceUrl: string) {
   });
   return article;
 }
+
+export async function getKeyPoints(articleId: any) {
+  const keyPoints = await prisma.keyPoints.findUnique({
+    where: { articleId },
+  });
+  return keyPoints;
+}
