@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function GET() {
-    
   try {
     const article = await prisma.article.findFirst({
       where: {
@@ -41,6 +40,9 @@ export async function GET() {
                     For financial/technical news: Prioritize numerical data, trends, and expert insights.
                     For political news: Highlight major decisions, policy changes, and quotes from key figures.
                     For breaking news: Emphasize who, what, when, where, why, and how.
+                    Format your response using the following structure:
+Headline: A clear, concise title capturing the essence of the article.
+Key Points (3–5 bullets focusing on on the key points).
 
         `,
         },
