@@ -2,10 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import OpenAI from "openai";
 import { cleanJsonString } from "@/lib/utils";
-
+import { z } from "zod";
+import { zodResponseFormat } from "openai/helpers/zod";
 const prisma = new PrismaClient();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
+const KeyPoint = z.object({
+    title: z.string(),
+    content: z.array(z.string()),
+  });
+  
+  const KeyPointsSchema = z.object({
+    key_points: z.array(KeyPoint),
+  });
 export async function GET() {
   try {
     const article = await prisma.article.findFirst({
@@ -39,17 +47,8 @@ Your task:
    - Any mention of funding events, product launches, partnerships, acquisitions, or regulatory changes, especially those relevant to scaling capital-efficient software businesses.
    - Any references to founder qualities or company strategies that align with Moonfire's approach (e.g., mission-driven, data mastery, superior product quality).
    - Potential risks or competition from incumbents and how the startup (if any) might defend itself (e.g., unique data moats).
-3. Format your response as JSON using the following structure:
 
-    "key_points": [
-        {
-            "title": "string",  // A brief, descriptive title for the key point
-            "content": "string" // Detailed explanation of the key point
-        }
-    ]
-
-   
-4. Maintain a professional tone and tailor all insights to the perspective of a venture capital firm (Moonfire) looking to invest in category-defining companies.`;
+3. Maintain a professional tone and tailor all insights to the perspective of a venture capital firm (Moonfire) looking to invest in category-defining companies.`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
@@ -65,6 +64,7 @@ Your task:
       ],
       temperature: 0.8,
       max_tokens: 2000,
+      response_format: zodResponseFormat(KeyPointsSchema, "key_points"),
     });
 
     const response = completion.choices[0].message.content;

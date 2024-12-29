@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import OpenAI from "openai";
-import { cleanJsonString } from "@/lib/utils";
 
+import { z } from "zod";
+import { zodResponseFormat } from "openai/helpers/zod";
 const prisma = new PrismaClient();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const KeyPoint = z.object({
+  title: z.string(),
+  content: z.array(z.string()),
+});
 
+const KeyPointsSchema = z.object({
+  key_points: z.array(KeyPoint),
+});
 export async function GET() {
   try {
     const article = await prisma.article.findFirst({
@@ -46,17 +54,10 @@ Your task:
    - Key figures or organizations involved and their roles.  
    - Broader context or background that explains the significance of the story.  
    - Potential impact or next steps – what could happen next or how the situation may evolve.  
-3. Format your response as JSON using the following structure:  
-   
-    "key_points": [
-        {
-            "title": "string",  // A brief, descriptive title for the key point
-            "content": "string" // Detailed explanation of the key point
-        }
-    ]
+
 
    
-4. Maintain a neutral, professional tone and ensure the summary distills the article into its most essential components, making it easier for journalists to report on the story quickly and accurately.  
+3. Maintain a neutral, professional tone and ensure the summary distills the article into its most essential components, making it easier for journalists to report on the story quickly and accurately.  
 
 
         `,
@@ -68,10 +69,10 @@ Your task:
       ],
       temperature: 0.8,
       max_tokens: 2000,
+      response_format: zodResponseFormat(KeyPointsSchema, "key_points"),
     });
 
-    const response = completion.choices[0].message.content;
-    const summary = response ? cleanJsonString(response) : null;
+    const summary = completion.choices[0].message.content;
 
     if (summary) {
       const result = await prisma.$transaction(async (tx) => {
