@@ -10,12 +10,17 @@ export async function GET() {
     
     const article = await prisma.article.findFirst({
       where: {
-        keyPoints: null
+        keyPoints: null,
+        newspaper: {
+          name: {
+            in: ["TechCrunch", "Ars Technica"],
+          },
+        },
       },
       select: {
         id: true,
-        text: true
-      }
+        text: true,
+      },
     });
 
     
