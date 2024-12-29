@@ -40,7 +40,7 @@ CREATE TABLE "Headlines" (
 -- CreateTable
 CREATE TABLE "KeyPoints" (
     "id" SERIAL NOT NULL,
-    "keyPoints" TEXT NOT NULL,
+    "keyPoints" JSONB NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "articleId" INTEGER NOT NULL,
 

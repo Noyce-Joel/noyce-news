@@ -46,3 +46,23 @@ export const cleanText = (text: string): string => {
 
   return cleanedText;
 };
+
+export function cleanJsonString(input: string) {
+  // Remove backticks and "json" tag
+  let cleaned = input.replace(/```json|```/g, "");
+
+  // Remove surrounding quotes if they exist
+  cleaned = cleaned.replace(/^["']|["']$/g, '');
+  
+  // Trim any whitespace
+  cleaned = cleaned.trim();
+  
+  // Parse and stringify to validate and format JSON
+  try {
+      const parsed = JSON.parse(cleaned);
+      return parsed;
+  } catch (error) {
+      console.error('Error parsing JSON:', error);
+      return null;
+  }
+}

@@ -43,7 +43,7 @@ model Headlines {
 
 model KeyPoints {
   id        Int      @id @default(autoincrement()) // Unique ID for each newspaper
-  keyPoints String   @db.Text
+  keyPoints Json     // Stored as JSON data
   createdAt DateTime @default(now()) // Timestamp when the article was added
   article   Article  @relation(fields: [articleId], references: [id])
   articleId Int      @unique // Added unique constraint

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import OpenAI from "openai";
+import { cleanJsonString } from "@/lib/utils";
 
 const prisma = new PrismaClient();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -69,7 +70,8 @@ Your task:
       max_tokens: 2000,
     });
 
-    const summary = completion.choices[0].message.content;
+    const response = completion.choices[0].message.content;
+    const summary = response ? cleanJsonString(response) : null;
 
     if (summary) {
       const result = await prisma.$transaction(async (tx) => {
