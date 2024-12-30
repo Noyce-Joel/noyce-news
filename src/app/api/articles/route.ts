@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
         },
       });
     }
-
+    console.log("articles", articles);
 
     return NextResponse.json({ articles });
   } catch (error) {

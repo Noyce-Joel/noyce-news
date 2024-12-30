@@ -21,7 +21,13 @@ export type ArticleType = {
     createdAt: string;
     updatedAt: string;
     article: ArticleType;
-    keyPoints: string | null
+    // keyPoints: string | null;  // remove this line
+    keyPoints: {
+      key_points: {
+        title: string;
+        content: string[];
+      }[];
+    } | null; // or 'any' if you prefer
   };
 };
 
@@ -57,72 +63,40 @@ export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    const fetchGuardianArticles = async () => {
-      try {
-        const data = await getNews("The Guardian");
-        setNews(
-          "guardian",
-          data.articles.slice(0, 12).map((article: any) => ({
-            ...article,
-            source: article.newspaper?.name ?? "Unknown",
-          }))
-        );
-      } catch (error) {
-        console.error("Error fetching Guardian articles:", error);
-      }
-    };
+  const sources = [
+    { name: "The Guardian", key: "guardian" },
+    { name: "TechCrunch", key: "techCrunch" },
+    { name: "BBC UK", key: "bbc" },
+    { name: "Ars Technica", key: "arsTechnica" }
+  ] as const;
 
-    const fetchTechCrunchArticles = async () => {
-      try {
-        const data = await getNews("TechCrunch");
-        setNews(
-          "techCrunch",
-          data.articles.slice(0, 12).map((article: any) => ({
-            ...article,
-            source: article.newspaper?.name ?? "Unknown",
-          }))
-        );
-      } catch (error) {
-        console.error("Error fetching TechCrunch articles:", error);
-      }
-    };
+  const fetchArticles = async (source: typeof sources[number]) => {
+    try {
+      const data = await getNews(source.name);
+      
+      setNews(
+        source.key,
+        data.articles.slice(0, 12).map((article: any) => ({
+          ...article,
+          source: article.newspaper?.name ?? "Unknown",
+          keyPoints: article.keyPoints ? {
+            ...article.keyPoints,
+            keyPoints: typeof article.keyPoints.keyPoints === 'string'
+              ? JSON.parse(article.keyPoints.keyPoints)
+              : article.keyPoints.keyPoints
+          } : null
+        }))
+      );
+    } catch (error) {
+      console.error(`Error fetching ${source.name} articles:`, error);
+    }
+  };
 
-    const fetchBBCArticles = async () => {
-      try {
-        const data = await getNews("BBC UK");
-        setNews(
-          "bbc",
-          data.articles.slice(0, 12).map((article: any) => ({
-            ...article,
-            source: article.newspaper?.name ?? "Unknown",
-          }))
-        );
-      } catch (error) {
-        console.error("Error fetching TechCrunch articles:", error);
-      }
-    };
-
-    const fetchArsTechnicaArticles = async () => {
-      try {
-        const data = await getNews("Ars Technica");
-        setNews(
-          "arsTechnica",
-          data.articles.slice(0, 12).map((article: any) => ({
-            ...article,
-            source: article.newspaper?.name ?? "Unknown",
-          }))
-        );
-      } catch (error) {
-        console.error("Error fetching TechCrunch articles:", error);
-      }
-    };
-
-    fetchGuardianArticles();
-    fetchTechCrunchArticles();
-    fetchBBCArticles();
-    fetchArsTechnicaArticles();
-
-  }, []);
+  // Fetch all sources in parallel
+  Promise.all(sources.map(fetchArticles)).catch(error => {
+    console.error("Error fetching articles:", error);
+  });
+}, []);
 
   return (
     <NewsContext.Provider value={{ news, setNews }}>
