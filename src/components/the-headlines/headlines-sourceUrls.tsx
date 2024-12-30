@@ -138,55 +138,72 @@ export default function HeadlinesSourceUrls({
       </Popover>
       <Dialog open={!!selectedArticle} onOpenChange={setSelectedArticle}>
         {selectedArticle && (
-          <DialogContent className="dialog-container max-w-screen-lg h-[95vh] overflow-y-auto p-12 border-gray-400">
-            <DialogHeader>
-              <DialogTitle className="text-4xl font-semibold leading-tight mb-4">
-                {selectedArticle.standFirst}{" "}
-              </DialogTitle>
-              <DialogDescription className="text-sm text-gray-500 flex gap-4 items-center">
-                <span>{formatDate(selectedArticle.createdAt)}</span> |
-                <span>{selectedArticle.tag.toUpperCase()}</span> |
-                <span>{selectedArticle.source}</span> |
-                <Button variant="outline" className="">
-                  <Link target="_blank" href={selectedArticle.sourceUrl}>
-                    Read More
-                  </Link>
-                </Button>
-              </DialogDescription>
-            </DialogHeader>
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="mt-4"
-            >
-              {selectedArticle.mainImg && (
-                <div className="float-right w-[38vw] ml-6 mb-4">
-                  <AspectRatio ratio={16 / 9}>
-                    <Image
-                      src={selectedArticle.mainImg}
-                      alt={selectedArticle.headline}
-                      className="rounded-lg object-cover"
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      priority={true}
-                    />
-                  </AspectRatio>
-                </div>
-              )}
-              <div className="prose max-w-none">
-                <DialogDescription className=" text-base text-white text-justify">
-                  {selectedArticle.summary
-                    ?.split("\n\n")
-                    .map((paragraph: string, i: number) => (
-                      <span key={i} className="mb-4">
-                        {paragraph}
-                      </span>
-                    ))}
-                </DialogDescription>
+          <DialogContent className="max-w-screen-lg h-[95vh] overflow-y-auto p-12 border-gray-400">
+          <DialogHeader>
+            <DialogTitle className="text-4xl font-semibold leading-tight mb-4">
+              {selectedArticle.standFirst}{" "}
+            </DialogTitle>
+            <DialogDescription className="text-sm text-gray-500 flex gap-4 items-center">
+              <span>{formatDate(selectedArticle.createdAt)}</span> |
+              <span>{selectedArticle.tag.toUpperCase()}</span> |
+              <span>{selectedArticle.source}</span> |
+              <Button variant="outline" className="">
+                <Link target="_blank" href={selectedArticle.sourceUrl}>
+                  Read More
+                </Link>
+              </Button>
+            </DialogDescription>
+          </DialogHeader>
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="mt-4"
+          >
+            {selectedArticle.mainImg && (
+              <div className="float-right w-[30vw] ml-6 mb-4">
+                <AspectRatio ratio={16 / 9}>
+                  <Image
+                    src={selectedArticle.mainImg}
+                    alt={selectedArticle.headline}
+                    className="rounded-lg object-cover"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    priority={true}
+                  />
+                </AspectRatio>
               </div>
-            </motion.div>
-          </DialogContent>
+            )}
+
+           
+              <div className="prose max-w-none text-base text-white text-justify">
+                {selectedArticle.keyPoints?.keyPoints?.key_points?.map(
+                  (keyPoint: any, idx: any) => (
+                    <div key={keyPoint.title} className="px-8 border-l border-gray-700  mb-12">
+                      <h3 className="text-xl font-semibold mb-2">{keyPoint.title}</h3>
+                      <ul className="prose prose-invert">
+                        {keyPoint.content.map((content: any, i: any) => (
+                          <li key={i} className="list-disc mb-2">{content}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )
+                )}
+              </div>
+
+
+            <div className="prose max-w-none">
+
+              <DialogDescription className=" text-base text-white text-justify">
+                {selectedArticle.summary?.split("\n\n").map((paragraph: any, i: any) => (
+                  <span key={i} className="mb-4">
+                    {paragraph}
+                  </span>
+                ))}
+              </DialogDescription>
+            </div>
+          </motion.div>
+        </DialogContent>
         )}
       </Dialog>
     </>

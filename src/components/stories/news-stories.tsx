@@ -132,7 +132,7 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
                     className="mt-4"
                   >
                     {article.mainImg && (
-                      <div className="float-right w-[32vw] ml-6 -mt-20 -mr-4">
+                      <div className="float-right w-[30vw] ml-6 mb-4">
                         <AspectRatio ratio={16 / 9}>
                           <Image
                             src={article.mainImg}
@@ -150,11 +150,11 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
                       <div className="prose max-w-none text-base text-white text-justify">
                         {article.keyPoints?.keyPoints?.key_points?.map(
                           (keyPoint, idx) => (
-                            <div key={keyPoint.title} className="p-6 border border-gray-400 rounded-lg mb-4">
-                              <h3 className="text-2xl font-semibold mb-2">{keyPoint.title}</h3>
+                            <div key={keyPoint.title} className="px-8 border-l border-gray-700  mb-12">
+                              <h3 className="text-xl font-semibold mb-2">{keyPoint.title}</h3>
                               <ul className="prose prose-invert">
                                 {keyPoint.content.map((content, i) => (
-                                  <li key={i} className="list-disc">{content}</li>
+                                  <li key={i} className="list-disc mb-2">{content}</li>
                                 ))}
                               </ul>
                             </div>
