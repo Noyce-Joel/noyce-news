@@ -18,7 +18,7 @@
         "schedule": "0 * * * *"
       },
       {
-        "path": "/api/common-takeaways",
+        "path": "/api/llama",
         "schedule": "*/2 * * * *" 
       },
       {
