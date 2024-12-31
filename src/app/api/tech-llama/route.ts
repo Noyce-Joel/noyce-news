@@ -15,7 +15,7 @@ export async function GET(request: Request) {
           },
         },
       },
-      orderBy: { createdAt: "asc" },
+      orderBy: { createdAt: "desc" },
       select: {
         id: true,
         text: true,
