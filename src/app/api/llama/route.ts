@@ -65,8 +65,17 @@ export async function GET(request: Request) {
         type: "json",
         value: {
           properties: {
-            summary: { type: "string" },
-            keyPoints: { type: "array", items: { type: "string" } },
+            key_points: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  title: { type: "string" },
+                  content: { type: "array", items: { type: "string" } },
+                },
+                required: ["title", "content"],
+              },
+            },
           },
           required: ["summary", "keyPoints"],
         },
@@ -94,11 +103,10 @@ export async function GET(request: Request) {
 
         return keyPoints;
       });
+      return NextResponse.json({
+        keyPoints: result.keyPoints,
+      });
     }
-
-    return NextResponse.json({
-      keyPoints: result.keyPoints,
-    });
   } catch (error) {
     console.error("Error during summarization:", error);
     return NextResponse.json(
