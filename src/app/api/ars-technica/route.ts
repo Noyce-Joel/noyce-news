@@ -103,7 +103,6 @@ export async function GET() {
       articles.push(content);
     }
 
-    console.log("articles", articles);
     await browser.close();
 
     const storedArticles = [];

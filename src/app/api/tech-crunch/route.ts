@@ -5,7 +5,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 chromium.setHeadlessMode = true;
-
+export const edge = false
 export const maxDuration = 300;
 
 export async function GET() {
@@ -96,7 +96,6 @@ export async function GET() {
       articles.push(content);
     }
 
-    console.log("articles", articles);
     await browser.close();
 
     const storedArticles = [];

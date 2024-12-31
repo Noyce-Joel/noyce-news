@@ -156,3 +156,12 @@ export async function getKeyPoints(articleId: any) {
   });
   return keyPoints;
 }
+
+export async function getSummaryFromArticleId(articleId: any) {
+  const summary = await prisma.article.findUnique({
+    where: { id: articleId },
+    select: { summary: true },
+  });
+  return summary;
+}
+

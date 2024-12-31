@@ -26,7 +26,6 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 
 export default function NewsStories({ news }: { news: ArticleType[] }) {
-  console.log("news", news);
   const articles = news || [];
   if (articles.length === 0) return <div>No articles available</div>;
   const containerVariants = {
