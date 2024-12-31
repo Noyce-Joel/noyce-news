@@ -4,7 +4,7 @@ import { HfInference } from "@huggingface/inference";
 
 const prisma = new PrismaClient();
 export const maxDuration = 300;
-export async function POST(request: Request) {
+export async function GET(request: Request) {
   try {
     const article = await prisma.article.findFirst({
       where: {
