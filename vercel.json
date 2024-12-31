@@ -6,7 +6,7 @@
         "schedule": "0 * * * *" 
       },
       {
-        "path": "/api/takeaways",
+        "path": "/api/tech-llama",
         "schedule": "*/2 * * * *" 
       },
       {
