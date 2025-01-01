@@ -5,18 +5,15 @@ import { HfInference } from "@huggingface/inference";
 const prisma = new PrismaClient();
 export const maxDuration = 300;
 export async function GET(request: Request) {
-  console.log("LLAMA API CALLED");
   try {
     const article = await prisma.article.findFirst({
       where: {
         newspaper: {
           name: {
-            in: ["TechCrunch", "Ars Technica"],
+            in: ["The Guardian", "BBC UK"],
           },
         },
-        keyPoints: {
-          is: null,
-        },
+        keyPoints: null,
       },
       select: {
         id: true,
@@ -43,7 +40,7 @@ export async function GET(request: Request) {
     const assistantPrompt = `
     Your task:
         1. Read the provided news article.
-        2. Produce a concise summary tailored for journalists, emphasizing:
+        2. Produce a concise key-points tailored for journalists, emphasizing:
            - The core facts – Who, What, Where, When, Why, and How.
            - Any new developments – product launches, partnerships, legislation, policy changes, 
              public reactions, or major incidents.
@@ -51,7 +48,7 @@ export async function GET(request: Request) {
            - Broader context or background that explains the significance of the story.
            - Potential impact or next steps – what could happen next or how the situation may evolve.
 
-        3. Maintain a neutral, professional tone and ensure the summary distills the article into its 
+        3. Maintain a neutral, professional tone and ensure the key-points distill the article into its 
            most essential components, making it easier for journalists to report on the story quickly 
            and accurately.`;
 
@@ -66,15 +63,13 @@ export async function GET(request: Request) {
           { role: "assistant", content: assistantPrompt },
         ],
         temperature: 0.8,
-        max_tokens: 5000,
-        top_p: 0.7,
+
         response_format: {
           type: "json_object",
-          schema: {
+          value: {
             type: "object",
             properties: {
-              summary: { type: "string" },
-              key_points: {
+              keyPoints: {
                 type: "array",
                 items: {
                   type: "object",
@@ -86,7 +81,7 @@ export async function GET(request: Request) {
                 },
               },
             },
-            required: ["summary", "key_points"],
+            required: ["keyPoints"],
           },
         },
       })
@@ -109,8 +104,6 @@ export async function GET(request: Request) {
 
     const response = result.choices[0]?.message?.content;
 
-    console.log("Raw API response:", response);
-
     let summary;
     try {
       summary = response ? JSON.parse(response) : null;
@@ -122,7 +115,7 @@ export async function GET(request: Request) {
       );
     }
 
-    if (!summary || !summary.key_points) {
+    if (!summary || !summary.keyPoints) {
       console.error("Missing keyPoints in the summary:", summary);
       return NextResponse.json(
         { error: "Summary generated, but keyPoints are missing" },

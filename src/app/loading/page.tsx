@@ -1,36 +1,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { NewsLoadingStates } from "@/components/loading/news-loading-states";
-import NewsStories from "@/components/stories/news-stories";
-
 import { useState } from "react";
 import { useEffect } from "react";
 
 interface ModelResponse {
-  article: string;
-  message: string;
+  keyPoints: {
+    title: string;
+    content: string[];
+  }[];
 }
 
 export default function Home() {
-  const [modelResponse, setModelResponse] = useState<any | null>(null);
+  const [modelResponse, setModelResponse] = useState<ModelResponse | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getModelResponse = async () => {
       try {
-        const response = await fetch("/api/llama", {
-          method: "POST",
-          body: JSON.stringify({ articleId: 100 }),
-        });
+        const response = await fetch("/api/tech-llama");
         const data = await response.json();
+        console.log("Received data:", data);
         setModelResponse(data);
       } catch (error) {
         console.error("Error fetching model response:", error);
       } finally {
         setIsLoading(false);
       }
-    }
+    };
+
     getModelResponse();
   }, []);
 
@@ -42,11 +42,20 @@ export default function Home() {
 
   return (
     <div>
-      {isLoading ? (
-        <NewsLoadingStates />
+      {Array.isArray(modelResponse?.keyPoints) ? (
+        modelResponse.keyPoints.map((point, index) => (
+          <div key={index}>
+            <h3>{point.title}</h3>
+            <ul>
+              {point.content.map((item, itemIndex) => (
+                <li key={itemIndex}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))
       ) : (
-        modelResponse?.summary
+        <p>No data available</p>
       )}
     </div>
-  )
+  );
 }

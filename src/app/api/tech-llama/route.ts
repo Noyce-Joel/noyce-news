@@ -13,9 +13,7 @@ export async function GET(request: Request) {
             in: ["TechCrunch", "Ars Technica"],
           },
         },
-        keyPoints: {
-          is: null,
-        },
+        keyPoints: null,
       },
       select: {
         id: true,
@@ -30,20 +28,34 @@ export async function GET(request: Request) {
     console.log(`Processing article ID: ${article.id}`);
 
     const systemPrompt = `
-        You are an AI assistant that processes fintech news articles to create concise, VC-focused summaries for investors at Moonfire. We have a guiding philosophy that the most transformative innovations are driven by four interconnected pillars: Access, Efficiency, Quality, and Data. Data is the foundational element, enabling better insights and predictive capabilities, and amplifying the impact of the other three.
+       You are an AI assistant specialized in analyzing fintech news to produce concise, investment-focused summaries for a venture capital firm. The firm’s investment thesis is guided by four core pillars—Access, Efficiency, Quality, and Data—where Data underpins the other three by delivering actionable insights and amplifying their impact. The firm looks for startups that:
 
-        Moonfire invests in scalable, capital-efficient software solutions that leverage these pillars to drive exponential growth and market disruption. We seek founders who are mission-driven, move with unrelenting speed, hustle relentlessly, attract top talent, learn continuously, and obsess over customer needs. We look for companies that build future moats by unlocking new markets, driving efficiency and scalability, leveraging network effects, delivering superior quality, ensuring seamless distribution, addressing clear pain points, and creating new markets.
+       Operate with speed, relentless hustle, and customer obsession.
+       Demonstrate mission-driven leadership, data mastery, and superior product quality.
+       Show clear paths to building moats, expanding markets, enhancing efficiency, driving scalability, leveraging network effects, and addressing unmet pain points.
+
     `;
     const assistantPrompt = `
-        Your task:
-        1. Read the provided fintech news article.
-        2. Produce a concise summary tailored for Moonfire's investors, emphasizing:
-           - How the company, market, or technology in the article relates to the four pillars: Access, Efficiency, Quality, and Data.
-           - Any mention of funding events, product launches, partnerships, acquisitions, or regulatory changes, especially those relevant to scaling capital-efficient software businesses.
-           - Any references to founder qualities or company strategies that align with Moonfire's approach (e.g., mission-driven, data mastery, superior product quality).
-           - Potential risks or competition from incumbents and how the startup (if any) might defend itself (e.g., unique data moats).
+       Review the Provided Fintech News Article
 
-        3. Maintain a professional tone and tailor all insights to the perspective of a venture capital firm (Moonfire) looking to invest in category-defining companies.`;
+       Understand the context, key players, and events in the article (e.g., funding rounds, product launches, partnerships, acquisitions, or regulatory shifts).
+       
+         
+       
+       Present Clear Key Points for Investors
+
+       Highlight how the company, product, or market in the article aligns with or impacts the four pillars (Access, Efficiency, Quality, Data).
+       Emphasize any notable strategic elements (e.g., unique data usage, capital efficiency, network effects) that could indicate competitive advantage or long-term defensibility.
+       Note any risks, competition from incumbents, or potential regulatory barriers.
+       Focus on factors that are most relevant to a venture capital audience, including:
+       Funding and Growth: Key metrics, valuation insights, or runway considerations.
+       Market Opportunities and Moats: Scalability, addressable market size, barriers to entry, differentiation, or network effects.
+       Founders and Team: Leadership qualities, strategic vision, cultural alignment with rapid iteration and continuous learning.
+       Regulatory and Industry Developments: Emerging legislation, compliance requirements, or shifts in market sentiment.
+       Maintain a Professional, Insight-Driven Tone
+         
+       Prioritize clarity, conciseness, and direct relevance to venture capital decision-making.
+       Where possible, offer brief commentary on potential next steps or investment considerations.`;
 
     const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 
@@ -56,15 +68,13 @@ export async function GET(request: Request) {
           { role: "assistant", content: assistantPrompt },
         ],
         temperature: 0.8,
-        max_tokens: 5000,
-        top_p: 0.7,
+
         response_format: {
           type: "json_object",
-          schema: {
+          value: {
             type: "object",
             properties: {
-              summary: { type: "string" },
-              key_points: {
+              keyPoints: {
                 type: "array",
                 items: {
                   type: "object",
@@ -76,7 +86,7 @@ export async function GET(request: Request) {
                 },
               },
             },
-            required: ["summary", "key_points"],
+            required: ["keyPoints"],
           },
         },
       })
@@ -99,8 +109,6 @@ export async function GET(request: Request) {
 
     const response = result.choices[0]?.message?.content;
 
-    console.log("Raw API response:", response);
-
     let summary;
     try {
       summary = response ? JSON.parse(response) : null;
@@ -112,7 +120,7 @@ export async function GET(request: Request) {
       );
     }
 
-    if (!summary || !summary.key_points) {
+    if (!summary || !summary.keyPoints) {
       console.error("Missing keyPoints in the summary:", summary);
       return NextResponse.json(
         { error: "Summary generated, but keyPoints are missing" },
