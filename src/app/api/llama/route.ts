@@ -116,7 +116,7 @@ export async function GET(request: Request) {
       );
     }
 
-    if (summary) {
+    if (summary.keyPoints) {
       const result = await prisma.$transaction(async (tx) => {
         const keyPoints = await tx.keyPoints.create({
           data: {
