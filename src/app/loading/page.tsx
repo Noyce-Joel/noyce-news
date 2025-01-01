@@ -20,7 +20,7 @@ export default function Home() {
   useEffect(() => {
     const getModelResponse = async () => {
       try {
-        const response = await fetch("/api/tech-llama");
+        const response = await fetch("/api/llama");
         const data = await response.json();
         console.log("Received data:", data);
         setModelResponse(data);

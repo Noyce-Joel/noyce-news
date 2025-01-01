@@ -28,40 +28,32 @@ export async function GET(request: Request) {
     console.log(`Processing article ID: ${article.id}`);
 
     const systemPrompt = `
-       You are an AI assistant specialized in analyzing fintech news to produce concise, investment-focused summaries for a venture capital firm. The firm’s investment thesis is guided by four core pillars—Access, Efficiency, Quality, and Data—where Data underpins the other three by delivering actionable insights and amplifying their impact. The firm looks for startups that:
+      You are an AI assistant that analyzes fintech news to produce concise, investment-focused summaries for a venture capital firm. The firm’s investment thesis revolves around four pillars—Access, Efficiency, Quality, and Data. Data drives insights and amplifies the other three. The firm seeks startups that:
 
-       Operate with speed, relentless hustle, and customer obsession.
-       Demonstrate mission-driven leadership, data mastery, and superior product quality.
-       Show clear paths to building moats, expanding markets, enhancing efficiency, driving scalability, leveraging network effects, and addressing unmet pain points.
+- Operate with speed, hustle, and customer focus.
+- Show mission-driven leadership, data expertise, and top-tier product quality.
+- Build moats, expand markets, improve efficiency, scale, leverage networks, and solve unmet needs.
+
 
     `;
     const assistantPrompt = `
-       Review the Provided Fintech News Article
+       Review the fintech article to extract key points for investors. 
 
-       Understand the context, key players, and events in the article (e.g., funding rounds, product launches, partnerships, acquisitions, or regulatory shifts).
-       
-         
-       
-       Present Clear Key Points for Investors
+Focus on:
+- Company context (funding, products, partnerships, acquisitions, regulation).
+- How the company aligns with Access, Efficiency, Quality, and Data.
+- Competitive advantages (data use, scalability, moats, network effects).
+- Risks (competition, regulation, market shifts).
+- Investor relevance (funding metrics, market size, leadership, compliance).
 
-       Highlight how the company, product, or market in the article aligns with or impacts the four pillars (Access, Efficiency, Quality, Data).
-       Emphasize any notable strategic elements (e.g., unique data usage, capital efficiency, network effects) that could indicate competitive advantage or long-term defensibility.
-       Note any risks, competition from incumbents, or potential regulatory barriers.
-       Focus on factors that are most relevant to a venture capital audience, including:
-       Funding and Growth: Key metrics, valuation insights, or runway considerations.
-       Market Opportunities and Moats: Scalability, addressable market size, barriers to entry, differentiation, or network effects.
-       Founders and Team: Leadership qualities, strategic vision, cultural alignment with rapid iteration and continuous learning.
-       Regulatory and Industry Developments: Emerging legislation, compliance requirements, or shifts in market sentiment.
-       Maintain a Professional, Insight-Driven Tone
-         
-       Prioritize clarity, conciseness, and direct relevance to venture capital decision-making.
-       Where possible, offer brief commentary on potential next steps or investment considerations.`;
+Keep it clear, concise, and actionable. Highlight next steps or investment considerations when applicable.
+`;
 
     const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 
     const result = await hf
       .chatCompletion({
-        model: "meta-llama/Llama-3.2-3B-Instruct",
+        model: "meta-llama/Llama-3.3-70B-Instruct",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: article.text },
