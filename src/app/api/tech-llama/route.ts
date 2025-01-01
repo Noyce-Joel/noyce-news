@@ -61,14 +61,14 @@ export async function GET(request: Request) {
 
     const result = await hf
       .chatCompletion({
-        model: "meta-llama/Llama-3.1-8B-Instruct",
+        model: "meta-llama/Llama-3.2-3B-Instruct",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: article.text },
           { role: "assistant", content: assistantPrompt },
         ],
         temperature: 0.8,
-
+        max_tokens: 3000,
         response_format: {
           type: "json_object",
           value: {
@@ -89,6 +89,8 @@ export async function GET(request: Request) {
             required: ["keyPoints"],
           },
         },
+        top_p: 0.4,
+        presence_penalty: 0.5,
       })
       .catch((error) => {
         console.error("HuggingFace API error:", {
