@@ -9,11 +9,14 @@ export async function GET(request: Request) {
   try {
     const article = await prisma.article.findFirst({
       where: {
-        keyPoints: null,
+       
         newspaper: {
           name: {
             in: ["The Guardian", "BBC UK"],
           },
+        },
+        keyPoints: {
+          keyPoints: undefined,
         },
       },
 
