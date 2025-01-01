@@ -75,7 +75,7 @@ export async function GET(request: Request) {
                 },
               },
             },
-            required: ["summary", "key_points"],
+            required: ["key_points"],
           },
         },
       })
