@@ -15,8 +15,8 @@ export async function GET(request: Request) {
           },
         },
         keyPoints: {
-          is: null
-        }
+          is: null,
+        },
       },
       select: {
         id: true,
@@ -69,8 +69,9 @@ export async function GET(request: Request) {
         max_tokens: 5000,
         top_p: 0.7,
         response_format: {
-          type: "json",
-          value: {
+          type: "json_object",
+          schema: {
+            type: "object",
             properties: {
               key_points: {
                 type: "array",
@@ -84,7 +85,7 @@ export async function GET(request: Request) {
                 },
               },
             },
-            required: ["summary", "keyPoints"],
+            required: ["summary", "key_points"],
           },
         },
       })
