@@ -5,6 +5,7 @@ import { HfInference } from "@huggingface/inference";
 const prisma = new PrismaClient();
 export const maxDuration = 300;
 export async function GET(request: Request) {
+  console.log("LLAMA API CALLED");
   try {
     const article = await prisma.article.findFirst({
       where: {
