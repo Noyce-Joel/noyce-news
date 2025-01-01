@@ -109,7 +109,7 @@ export async function GET(request: Request) {
       );
     }
 
-    if (!summary || !summary.keyPoints) {
+    if (!summary || !summary.key_points) {
       console.error("Missing keyPoints in the summary:", summary);
       return NextResponse.json(
         { error: "Summary generated, but keyPoints are missing" },
