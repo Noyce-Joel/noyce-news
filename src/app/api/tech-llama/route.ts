@@ -8,17 +8,15 @@ export async function GET(request: Request) {
   try {
     const article = await prisma.article.findFirst({
       where: {
-      
         newspaper: {
           name: {
             in: ["TechCrunch", "Ars Technica"],
           },
         },
         keyPoints: {
-          keyPoints: undefined,
-        },
+          is: null
+        }
       },
-      
       select: {
         id: true,
         text: true,
