@@ -63,7 +63,7 @@ export async function GET(request: Request) {
           { role: "user", content: article.text },
           { role: "assistant", content: assistantPrompt },
         ],
-        temperature: 0.5,
+        temperature: 0.8,
         max_tokens: 5000,
         top_p: 0.7,
         response_format: {
@@ -103,20 +103,31 @@ export async function GET(request: Request) {
       );
     }
 
-    const response = result.choices[0].message.content;
+    const response = result.choices[0]?.message?.content;
+
     console.log("Raw API response:", response);
 
-    const summary = response ? JSON.parse(response) : null;
-
-    if (!summary) {
-      console.error("Failed to parse summary JSON");
+    let summary;
+    try {
+      summary = response ? JSON.parse(response) : null;
+    } catch (parseError) {
+      console.error("Error parsing Hugging Face response:", parseError);
       return NextResponse.json(
-        { error: "Invalid summary format" },
+        { error: "Failed to parse API response", details: parseError },
         { status: 400 }
       );
     }
 
-    if (summary.keyPoints) {
+    if (!summary || !summary.keyPoints) {
+      console.error("Missing keyPoints in the summary:", summary);
+      return NextResponse.json(
+        { error: "Summary generated, but keyPoints are missing" },
+        { status: 400 }
+      );
+    }
+
+    // Transaction to store keyPoints
+    try {
       const result = await prisma.$transaction(async (tx) => {
         const keyPoints = await tx.keyPoints.create({
           data: {
@@ -124,12 +135,18 @@ export async function GET(request: Request) {
             articleId: article?.id,
           },
         });
-
         return keyPoints;
       });
+
       return NextResponse.json({
         keyPoints: result.keyPoints,
       });
+    } catch (dbError) {
+      console.error("Database error during keyPoints creation:", dbError);
+      return NextResponse.json(
+        { error: "Failed to save keyPoints", details: dbError },
+        { status: 500 }
+      );
     }
   } catch (error) {
     console.error("Error during summarization:", {
