@@ -61,7 +61,7 @@ export async function GET(request: Request) {
           type: "json",
           value: {
             properties: {
-              key_points: {
+              keyPoints: {
                 type: "array",
                 items: {
                   type: "object",
