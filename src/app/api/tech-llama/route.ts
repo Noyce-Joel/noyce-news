@@ -63,6 +63,7 @@ export async function GET(request: Request) {
           schema: {
             type: "object",
             properties: {
+              summary: { type: "string" },
               key_points: {
                 type: "array",
                 items: {
@@ -75,7 +76,7 @@ export async function GET(request: Request) {
                 },
               },
             },
-            required: ["key_points"],
+            required: ["summary", "key_points"],
           },
         },
       })
