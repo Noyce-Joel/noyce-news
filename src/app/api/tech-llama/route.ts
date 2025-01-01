@@ -55,7 +55,7 @@ Moonfire invests in scalable, capital-efficient software solutions that leverage
           { role: "assistant", content: assistantPrompt },
         ],
         temperature: 0.5,
-        max_tokens: 2048,
+        max_tokens: 5000,
         top_p: 0.7,
         response_format: {
           type: "json",
