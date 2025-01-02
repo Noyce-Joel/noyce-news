@@ -25,7 +25,7 @@ import { AspectRatio } from "../ui/aspect-ratio";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { formatDate } from "@/lib/utils";
-const sourceIcons = [
+export const sourceIcons = [
   {
     url: "https://www.theguardian.com/",
     title: "Guardian",
