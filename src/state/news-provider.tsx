@@ -63,40 +63,46 @@ export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-  const sources = [
-    { name: "The Guardian", key: "guardian" },
-    { name: "TechCrunch", key: "techCrunch" },
-    { name: "BBC UK", key: "bbc" },
-    { name: "Ars Technica", key: "arsTechnica" }
-  ] as const;
+    const sources = [
+      { name: "The Guardian", key: "guardian" },
+      { name: "TechCrunch", key: "techCrunch" },
+      { name: "BBC UK", key: "bbc" },
+      { name: "Ars Technica", key: "arsTechnica" },
+    ] as const;
 
-  const fetchArticles = async (source: typeof sources[number]) => {
-    try {
-      const data = await getNews(source.name);
-      
-      setNews(
-        source.key,
-        data.articles.slice(0, 12).map((article: any) => ({
-          ...article,
-          source: article.newspaper?.name ?? "Unknown",
-          keyPoints: article.keyPoints ? {
-            ...article.keyPoints,
-            keyPoints: typeof article.keyPoints.keyPoints === 'string'
-              ? JSON.parse(article.keyPoints.keyPoints)
-              : article.keyPoints.keyPoints
-          } : null
-        }))
-      );
-    } catch (error) {
-      console.error(`Error fetching ${source.name} articles:`, error);
-    }
-  };
+    const fetchArticles = async (source: (typeof sources)[number]) => {
+      try {
+        const data = await getNews(source.name);
 
-  // Fetch all sources in parallel
-  Promise.all(sources.map(fetchArticles)).catch(error => {
-    console.error("Error fetching articles:", error);
-  });
-}, []);
+        setNews(
+          source.key,
+          data.articles
+            .filter((article: any) => article.keyPoints !== null)
+            .slice(0, 12)
+            .map((article: any) => ({
+              ...article,
+              source: article.newspaper?.name ?? "Unknown",
+              keyPoints: article.keyPoints
+                ? {
+                    ...article.keyPoints,
+                    keyPoints:
+                      typeof article.keyPoints.keyPoints === "string"
+                        ? JSON.parse(article.keyPoints.keyPoints)
+                        : article.keyPoints.keyPoints,
+                  }
+                : null,
+            }))
+        );
+      } catch (error) {
+        console.error(`Error fetching ${source.name} articles:`, error);
+      }
+    };
+
+    // Fetch all sources in parallel
+    Promise.all(sources.map(fetchArticles)).catch((error) => {
+      console.error("Error fetching articles:", error);
+    });
+  }, []);
 
   return (
     <NewsContext.Provider value={{ news, setNews }}>

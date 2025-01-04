@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+
+import { NewsLoadingStates } from "@/components/loading/news-loading-states";
+import WeatherForecast from "@/components/weather/weather";
 import { useState } from "react";
 import { useEffect } from "react";
 
@@ -12,7 +15,7 @@ interface ModelResponse {
 }
 
 export default function Home() {
-  const [modelResponse, setModelResponse] = useState<ModelResponse | null>(
+  const [modelResponse, setModelResponse] = useState<any | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(true);
@@ -20,7 +23,7 @@ export default function Home() {
   useEffect(() => {
     const getModelResponse = async () => {
       try {
-        const response = await fetch("/api/llama");
+        const response = await fetch("http://api.weatherstack.com/current?access_key=a8ec3e4398a63aed320b4b45f762fe56&query=Wooler");
         const data = await response.json();
         console.log("Received data:", data);
         setModelResponse(data);
@@ -36,26 +39,15 @@ export default function Home() {
 
   useEffect(() => {
     if (modelResponse) {
-      console.log(modelResponse);
+      console.log('modelResponse', modelResponse);
     }
   }, [modelResponse]);
 
   return (
     <div>
-      {Array.isArray(modelResponse?.keyPoints) ? (
-        modelResponse.keyPoints.map((point, index) => (
-          <div key={index}>
-            <h3>{point.title}</h3>
-            <ul>
-              {point.content.map((item, itemIndex) => (
-                <li key={itemIndex}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        ))
-      ) : (
-        <p>No data available</p>
-      )}
+     
+        <WeatherForecast weatherData={modelResponse} />
+
     </div>
   );
 }
