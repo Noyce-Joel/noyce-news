@@ -13,7 +13,7 @@ interface VideoPlayerProps {
 }
 
 export const NewsLoadingStates: FC<VideoPlayerProps> = ({
-  src = "/globe-2.mov",
+  src = "/globe-2.mp4",
   width = "100%",
   height = "auto",
   controls = false,
@@ -41,7 +41,7 @@ export const NewsLoadingStates: FC<VideoPlayerProps> = ({
             e.currentTarget.currentTime = 1;
           }}
           className="invert grayscale lg:w-32 w-44 h-auto bg-black overflow-hidden" 
-          style={{ clipPath: 'inset(0 0 10px 0)' }}
+          style={{ clipPath: 'inset(0 10px 10px 0)' }}
         >
           Your browser does not support the video tag.
         </video>
