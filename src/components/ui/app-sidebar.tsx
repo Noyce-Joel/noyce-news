@@ -1,10 +1,7 @@
 "use client";
 
 import {
-  SiSky,
   SiTechcrunch,
-  SiTheguardian,
-  SiWireguard,
   SiArstechnica,
 } from "react-icons/si";
 import { TbBrandGuardian, TbSphere } from "react-icons/tb";
@@ -15,8 +12,6 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
