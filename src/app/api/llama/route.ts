@@ -4,8 +4,10 @@ import { HfInference } from "@huggingface/inference";
 
 const prisma = new PrismaClient();
 export const maxDuration = 300;
+
 export async function GET(request: Request) {
   try {
+    // 1. Fetch an article from the database
     const article = await prisma.article.findFirst({
       where: {
         newspaper: {
@@ -20,6 +22,7 @@ export async function GET(request: Request) {
         text: true,
       },
     });
+
     if (!article) {
       console.log("No articles found to summarize");
       return NextResponse.json({ message: "No articles to summarize" });
@@ -27,30 +30,35 @@ export async function GET(request: Request) {
 
     console.log(`Processing article ID: ${article.id}`);
 
+    // Log article length & snippet for debugging
+    console.log("Article text length:", article.text?.length ?? 0);
+    console.log("Article text snippet:", article.text?.slice(0, 200));
+
+    // 2. Prepare prompts
     const systemPrompt = `
       You are an AI assistant that creates concise, journalist-focused news summaries.  
-The goal is to provide journalists with clear, accurate, and essential facts that highlight  
-the core story, key players, and broader context. Summaries must be factual and structured  
-to help journalists craft compelling narratives quickly.
-
+      The goal is to provide journalists with clear, accurate, and essential facts that highlight  
+      the core story, key players, and broader context. Summaries must be factual and structured  
+      to help journalists craft compelling narratives quickly.
     `;
     const assistantPrompt = `
-   Task:
-1. Read the news article.  
-2. Summarize key points for journalists, focusing on:  
-   - Core facts (Who, What, Where, When, Why, How).  
-   - New developments (launches, policies, incidents, reactions).  
-   - Key figures/organizations and their roles.  
-   - Background to explain significance.  
-   - Potential impact or next steps.  
-   
-3. Keep the tone neutral and professional. Deliver essential, easy-to-report details.  
-`;
+      Task:
+      1. Read the news article.  
+      2. Summarize key points for journalists, focusing on:  
+         - Core facts (Who, What, Where, When, Why, How).  
+         - New developments (launches, policies, incidents, reactions).  
+         - Key figures/organizations and their roles.  
+         - Background to explain significance.  
+         - Potential impact or next steps.  
+      3. Keep the tone neutral and professional. Deliver essential, easy-to-report details.
+    `;
 
+    // 3. Call Hugging Face Inference
     const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 
-    const result = await hf
-      .chatCompletion({
+    let hfResult;
+    try {
+      hfResult = await hf.chatCompletion({
         model: "meta-llama/Llama-3.3-70B-Instruct",
         messages: [
           { role: "system", content: systemPrompt },
@@ -81,29 +89,32 @@ to help journalists craft compelling narratives quickly.
         },
         top_p: 0.4,
         presence_penalty: 0.5,
-      })
-      .catch((error) => {
-        console.error("HuggingFace API error:", {
-          message: error.message,
-          status: error.status,
-          response: error.response?.data,
-        });
-        throw error;
       });
 
-    if (!result) {
-      console.error("No result returned from HuggingFace API");
-      return NextResponse.json(
-        { error: "No summary generated" },
-        { status: 400 }
-      );
+      // Log raw Hugging Face response
+      console.log("Raw HuggingFace response:", JSON.stringify(hfResult, null, 2));
+    } catch (error: any) {
+      console.error("HuggingFace API error:", {
+        message: error.message,
+        status: error.status,
+        response: error.response?.data,
+      });
+      throw error;
     }
 
-    const response = result.choices[0]?.message?.content;
+    if (!hfResult) {
+      console.error("No result returned from HuggingFace API");
+      return NextResponse.json({ error: "No summary generated" }, { status: 400 });
+    }
 
+    // 4. Extract the response content
+    const responseContent = hfResult.choices[0]?.message?.content;
+    console.log("Response content from Hugging Face:", responseContent);
+
+    // 5. Parse JSON from the response
     let summary;
     try {
-      summary = response ? JSON.parse(response) : null;
+      summary = responseContent ? JSON.parse(responseContent) : null;
     } catch (parseError) {
       console.error("Error parsing Hugging Face response:", parseError);
       return NextResponse.json(
@@ -111,6 +122,9 @@ to help journalists craft compelling narratives quickly.
         { status: 400 }
       );
     }
+
+    // Log the parsed summary
+    console.log("Parsed summary object:", JSON.stringify(summary, null, 2));
 
     if (!summary || !summary.keyPoints) {
       console.error("Missing keyPoints in the summary:", summary);
@@ -120,20 +134,24 @@ to help journalists craft compelling narratives quickly.
       );
     }
 
-    // Transaction to store keyPoints
+    // 6. Store keyPoints in the database within a transaction
     try {
-      const result = await prisma.$transaction(async (tx) => {
+      const dbResult = await prisma.$transaction(async (tx) => {
         const keyPoints = await tx.keyPoints.create({
           data: {
             keyPoints: summary,
-            articleId: article?.id,
+            articleId: article.id,
           },
         });
         return keyPoints;
       });
 
+      // Log database insertion result
+      console.log("Database insertion result:", dbResult);
+
+      // 7. Respond with the stored keyPoints
       return NextResponse.json({
-        keyPoints: result.keyPoints,
+        keyPoints: dbResult.keyPoints,
       });
     } catch (dbError) {
       console.error("Database error during keyPoints creation:", dbError);
@@ -142,7 +160,7 @@ to help journalists craft compelling narratives quickly.
         { status: 500 }
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error during summarization:", {
       name: error instanceof Error ? error.name : "Unknown",
       message: error instanceof Error ? error.message : String(error),
@@ -152,10 +170,7 @@ to help journalists craft compelling narratives quickly.
 
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Failed to summarize article",
+        error: error instanceof Error ? error.message : "Failed to summarize article",
         errorType: error instanceof Error ? error.name : "Unknown",
       },
       { status: 500 }
