@@ -7,7 +7,7 @@ export default function Loading() {
   useEffect(() => {
     const fetchTechLlama = async () => {
       try {
-        const data = await fetch("/api/tech-llama");
+        const data = await fetch("/api/llama");
         const json = await data.json();
         setData(json);
         console.log("json", json);
