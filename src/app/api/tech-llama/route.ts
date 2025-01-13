@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { HfInference } from "@huggingface/inference";
 
 const prisma = new PrismaClient();
 export const maxDuration = 300;
-
 export async function GET(request: Request) {
   try {
     const article = await prisma.article.findFirst({
@@ -20,7 +20,6 @@ export async function GET(request: Request) {
         text: true,
       },
     });
-
     if (!article) {
       console.log("No articles found to summarize");
       return NextResponse.json({ message: "No articles to summarize" });
@@ -34,8 +33,9 @@ export async function GET(request: Request) {
 - Operate with speed, hustle, and customer focus.
 - Show mission-driven leadership, data expertise, and top-tier product quality.
 - Build moats, expand markets, improve efficiency, scale, leverage networks, and solve unmet needs.
-    `;
 
+
+    `;
     const assistantPrompt = `
        Review the fintech article to extract key points for investors. 
 
@@ -47,52 +47,65 @@ Focus on:
 - Investor relevance (funding metrics, market size, leadership, compliance).
 
 Keep it clear, concise, and actionable. Highlight next steps or investment considerations when applicable.
-    `;
+`;
 
-    // Replace with your Inference Endpoint URL
-    const endpointUrl = "https://s8qioxw0i3d7i8oe.us-east-1.aws.endpoints.huggingface.cloud";
+    const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 
-    // Request payload for the custom endpoint
-    const payload = {
-      inputs: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: article.text },
-        { role: "assistant", content: assistantPrompt },
-      ],
-      parameters: {
+    const result = await hf
+      .chatCompletion({
+        model: "meta-llama/Llama-3.3-70B-Instruct",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: article.text },
+          { role: "assistant", content: assistantPrompt },
+        ],
         temperature: 0.8,
         max_tokens: 3000,
+        response_format: {
+          type: "json_object",
+          value: {
+            type: "object",
+            properties: {
+              keyPoints: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    title: { type: "string" },
+                    content: { type: "array", items: { type: "string" } },
+                  },
+                  required: ["title", "content"],
+                },
+              },
+            },
+            required: ["keyPoints"],
+          },
+        },
         top_p: 0.4,
         presence_penalty: 0.5,
-      },
-    };
+      })
+      .catch((error) => {
+        console.error("HuggingFace API error:", {
+          message: error.message,
+          status: error.status,
+          response: error.response?.data,
+        });
+        throw error;
+      });
 
-    // Call the custom endpoint with fetch
-    const response = await fetch(endpointUrl, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}`,  // API key for authentication
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("HuggingFace Endpoint Error:", errorData);
+    if (!result) {
+      console.error("No result returned from HuggingFace API");
       return NextResponse.json(
-        { error: "Failed to get a response from the Hugging Face endpoint", details: errorData },
-        { status: response.status }
+        { error: "No summary generated" },
+        { status: 400 }
       );
     }
 
-    const result = await response.json();
-
-    const generatedContent = result.choices?.[0]?.message?.content;
+    const response = result.choices[0]?.message?.content;
 
     let summary;
     try {
-      summary = generatedContent ? JSON.parse(generatedContent) : null;
+      summary = response ? JSON.parse(response) : null;
     } catch (parseError) {
       console.error("Error parsing Hugging Face response:", parseError);
       return NextResponse.json(
@@ -109,7 +122,7 @@ Keep it clear, concise, and actionable. Highlight next steps or investment consi
       );
     }
 
-    // Store keyPoints in the database
+    // Transaction to store keyPoints
     try {
       const result = await prisma.$transaction(async (tx) => {
         const keyPoints = await tx.keyPoints.create({
@@ -141,7 +154,10 @@ Keep it clear, concise, and actionable. Highlight next steps or investment consi
 
     return NextResponse.json(
       {
-        error: error instanceof Error ? error.message : "Failed to summarize article",
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to summarize article",
         errorType: error instanceof Error ? error.name : "Unknown",
       },
       { status: 500 }
