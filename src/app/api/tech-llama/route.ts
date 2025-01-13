@@ -53,7 +53,7 @@ Keep it clear, concise, and actionable. Highlight next steps or investment consi
 
     const result = await hf
       .chatCompletion({
-        model: "meta-llama/Llama-3.3-70B-Instruct",
+        model: "NovaSky-AI/Sky-T1-32B-Preview",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: article.text },

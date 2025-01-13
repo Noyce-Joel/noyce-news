@@ -51,7 +51,7 @@ to help journalists craft compelling narratives quickly.
 
     const result = await hf
       .chatCompletion({
-        model: "google/gemma-2-2b-it",
+        model: "NovaSky-AI/Sky-T1-32B-Preview",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: article.text },
