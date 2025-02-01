@@ -7,7 +7,7 @@ import { NewsProvider } from "@/state/news-provider";
 import { ThemeProvider } from "next-themes";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/ui/app-sidebar";
-import { getCookie } from 'cookies-next';
+import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 const sourceSerif = Source_Serif_4({
   subsets: ["latin"],
@@ -24,30 +24,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore: any = cookies()
-  const defaultOpen = cookieStore.get("sidebar:state")?.value === "true"
+  const cookieStore: any = cookies();
+  const defaultOpen = cookieStore.get("sidebar:state")?.value === "true";
   return (
     // <ClerkProvider>
-    
-      <html lang="en" suppressHydrationWarning>
-        <body className={`${sourceSerif.variable} antialiased`}>
-          <ThemeProvider attribute="class" defaultTheme="dark">
-            {/* <SignedOut>
+
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${sourceSerif.variable} antialiased`}>
+        {/* <SignedOut>
               <Login />
             </SignedOut>
             <SignedIn> */}
-              <SidebarProvider defaultOpen={defaultOpen}>
-                <AppSidebar />
-                <SidebarTrigger />
-                <NewsProvider>
-                  
-                  {children}
-                </NewsProvider>
-              </SidebarProvider>
-            {/* </SignedIn> */}
-          </ThemeProvider>
-        </body>
-      </html>
+        <SidebarProvider defaultOpen={defaultOpen}>
+          <AppSidebar />
+          <SidebarTrigger />
+          <NewsProvider>{children}</NewsProvider>
+        </SidebarProvider>
+        {/* </SignedIn> */}
+      </body>
+    </html>
     // </ClerkProvider>
   );
 }

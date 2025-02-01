@@ -7,7 +7,6 @@ export const maxDuration = 300;
 
 export async function GET(request: Request) {
   try {
-    // 1. Fetch an article from the database
     const article = await prisma.article.findFirst({
       where: {
         newspaper: {
@@ -30,11 +29,9 @@ export async function GET(request: Request) {
 
     console.log(`Processing article ID: ${article.id}`);
 
-    // Log article length & snippet for debugging
     console.log("Article text length:", article.text?.length ?? 0);
     console.log("Article text snippet:", article.text?.slice(0, 200));
 
-    // 2. Prepare prompts
     const systemPrompt = `
       You are an AI assistant that creates concise, journalist-focused news summaries.  
       The goal is to provide journalists with clear, accurate, and essential facts that highlight  
@@ -53,13 +50,12 @@ export async function GET(request: Request) {
       3. Keep the tone neutral and professional. Deliver essential, easy-to-report details.
     `;
 
-    // 3. Call Hugging Face Inference
     const hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 
     let hfResult;
     try {
       hfResult = await hf.chatCompletion({
-        model: "meta-llama/Llama-3.3-70B-Instruct",
+        model: "deepseek-ai/DeepSeek-V3",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: article.text },
@@ -91,7 +87,6 @@ export async function GET(request: Request) {
         presence_penalty: 0.5,
       });
 
-      // Log raw Hugging Face response
       console.log("Raw HuggingFace response:", JSON.stringify(hfResult, null, 2));
     } catch (error: any) {
       console.error("HuggingFace API error:", {
@@ -107,11 +102,9 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "No summary generated" }, { status: 400 });
     }
 
-    // 4. Extract the response content
     const responseContent = hfResult.choices[0]?.message?.content;
     console.log("Response content from Hugging Face:", responseContent);
 
-    // 5. Parse JSON from the response
     let summary;
     try {
       summary = responseContent ? JSON.parse(responseContent) : null;
@@ -123,7 +116,6 @@ export async function GET(request: Request) {
       );
     }
 
-    // Log the parsed summary
     console.log("Parsed summary object:", JSON.stringify(summary, null, 2));
 
     if (!summary || !summary.keyPoints) {
@@ -134,7 +126,6 @@ export async function GET(request: Request) {
       );
     }
 
-    // 6. Store keyPoints in the database within a transaction
     try {
       const dbResult = await prisma.$transaction(async (tx) => {
         const keyPoints = await tx.keyPoints.create({
@@ -146,10 +137,8 @@ export async function GET(request: Request) {
         return keyPoints;
       });
 
-      // Log database insertion result
       console.log("Database insertion result:", dbResult);
 
-      // 7. Respond with the stored keyPoints
       return NextResponse.json({
         keyPoints: dbResult.keyPoints,
       });
