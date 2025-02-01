@@ -5,35 +5,27 @@ const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
   try {
-    // Parse the search parameters from the request URL
     const { searchParams } = new URL(req.url);
     const newspaperName = searchParams.get("newspaper");
+    const sectionName = searchParams.get("section");
 
-    let articles;
-
+    const filter: any = {};
     if (newspaperName) {
-
-      articles = await prisma.article.findMany({
-        where: {
-          newspaper: {
-            name: newspaperName,
-          },
-        },
-        orderBy: { createdAt: "desc" },
-        include: {
-          newspaper: true,
-          keyPoints: true,
-        },
-      });
-    } else {
-      // Fetch all articles if no newspaper is specified
-      articles = await prisma.article.findMany({
-        orderBy: { createdAt: "desc" },
-        include: {
-          newspaper: true, // Include newspaper metadata if needed
-        },
-      });
+      filter.newspaper = { name: newspaperName };
     }
+    if (sectionName) {
+      filter.section = { name: sectionName };
+    }
+
+    const articles = await prisma.article.findMany({
+      where: filter,
+      orderBy: { createdAt: "desc" },
+      include: {
+        newspaper: true,
+        section: true, 
+        keyPoints: true,
+      },
+    });
 
     return NextResponse.json({ articles });
   } catch (error) {

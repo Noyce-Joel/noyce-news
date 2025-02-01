@@ -8,9 +8,9 @@ import { useArticles } from "@/state/news-provider";
 
 export default function Home() {
   const { news } = useArticles();
-
-  if (news.govUk.length > 0) {
-    return <NewsStories news={news.govUk} />;
+    
+  if (news.govUk.environment.length > 0) {
+    return <NewsStories news={news.govUk.environment} />;
   }
   return <NewsLoadingStates />;
 }

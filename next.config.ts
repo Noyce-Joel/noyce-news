@@ -9,7 +9,8 @@ const nextConfig: NextConfig = {
       "via.placeholder.com",
       "e3.365dm.com",
       "cdn.arstechnica.net",
-      "cdn.worldweatheronline.com"
+      "cdn.worldweatheronline.com",
+      "assets.publishing.service.gov.uk",
     ],
   },
 };

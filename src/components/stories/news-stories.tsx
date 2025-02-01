@@ -19,18 +19,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogDescription,
 } from "../ui/dialog";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { sourceIcons } from "../the-headlines/headlines-sourceUrls";
 import { SiArstechnica } from "react-icons/si";
 import { TbBrandGuardian } from "react-icons/tb";
 import { SiTechcrunch } from "react-icons/si";
 import { FcBbc } from "react-icons/fc";
 import { ScrollArea } from "../ui/scroll-area";
-import { Separator } from "../ui/separator";
+import GovUkIcon from "../icons/GovUkIcon";
 
 export default function NewsStories({ news }: { news: ArticleType[] }) {
   const articles = news || [];
@@ -55,6 +53,11 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
       title: "Ars Technica",
       url: "/ars-technica",
       icon: <SiArstechnica className="text-xl text-gray-400 w-8 h-auto" />,
+    },
+    {
+      title: "GOV.UK",
+      url: "/gov-uk",
+      icon: <GovUkIcon />,
     },
   ];
   const getSourceIcon = (source: string) => {

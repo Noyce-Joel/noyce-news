@@ -10,7 +10,7 @@ export const maxDuration = 300;
 
 export async function GET() {
   const paperUrl =
-    "https://www.gov.uk/search/news-and-communications?level_one_taxon=495afdb6-47be-4df1-8b38-91c8adb1eefc&order=updated-newest";
+    "https://www.gov.uk/search/news-and-communications?level_one_taxon=3cf97f69-84de-41ae-bc7b-7e2cc238fa58&order=updated-newest";
 
   if (!paperUrl) {
     return NextResponse.json(
@@ -108,6 +108,13 @@ export async function GET() {
         where: { name: "GOV.UK" },
       });
 
+      let section = await prisma.section.findFirst({
+        where: {
+          name: "Environment",
+          newspaperId: newspaper?.id,
+        },
+      });
+
       if (!newspaper) {
         newspaper = await prisma.newspaper.create({
           data: {
@@ -116,6 +123,15 @@ export async function GET() {
             country: "United Kingdom",
             createdAt: new Date(),
             updatedAt: new Date(),
+          },
+        });
+      }
+
+      if (!section) {
+        section = await prisma.section.create({
+          data: {
+            name: "Environment",
+            newspaperId: newspaper.id,
           },
         });
       }
@@ -137,6 +153,7 @@ export async function GET() {
             tag: article.tag || "",
             summary: null, // No summary yet
             newspaperId: newspaper.id, // Link to the Guardian newspaper
+            sectionId: section.id, // Add the section ID
           },
         });
         storedArticles.push(savedArticle);

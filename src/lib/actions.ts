@@ -4,12 +4,16 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function getNews(newspaper?: string) {
+export async function getNews(newspaper?: string, section?: string) {
   try {
     let url = `${process.env.NEXT_PUBLIC_API_URL}/api/articles`;
     if (newspaper) {
       const encodedName = encodeURIComponent(newspaper);
       url += `?newspaper=${encodedName}`;
+    }
+    if (section) {
+      const encodedSection = encodeURIComponent(section);
+      url += `&section=${encodedSection}`;
     }
 
     const response = await fetch(url);

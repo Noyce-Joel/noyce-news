@@ -32,16 +32,15 @@ export type ArticleType = {
 };
 
 export type NewsSourceType = {
-  guardian: ArticleType[];
-  techCrunch: ArticleType[];
-  bbc: ArticleType[];
-  arsTechnica: ArticleType[];
-  govUk: ArticleType[];
+  govUk: {
+    environment: ArticleType[];
+    businessAndIndustry: ArticleType[];
+  };
 };
 
 export type NewsContextType = {
   news: NewsSourceType;
-  setNews: (source: keyof NewsSourceType, articles: ArticleType[]) => void;
+  setNews: React.Dispatch<React.SetStateAction<NewsSourceType>>;
 };
 
 export const NewsContext = createContext<NewsContextType | undefined>(
@@ -49,63 +48,40 @@ export const NewsContext = createContext<NewsContextType | undefined>(
 );
 
 export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
-  const [news, setNewsState] = useState<NewsSourceType>({
-    guardian: [],
-    techCrunch: [],
-    bbc: [],
-    arsTechnica: [],
-    govUk: [],
+  const [news, setNews] = useState<NewsSourceType>({
+    govUk: {
+      environment: [],
+      businessAndIndustry: [],
+    },
   });
 
-  const setNews = (source: keyof NewsSourceType, articles: ArticleType[]) => {
-    setNewsState((prev) => ({
-      ...prev,
-      [source]: articles,
-    }));
-  };
+  useEffect(() => {
+    async function fetchArticles() {
+      try {
+        const [envData, busData] = await Promise.all([
+          getNews("GOV.UK", "Environment"),
+          getNews("GOV.UK", "Business and Industry"),
+        ]);
+
+        setNews((prev) => ({
+          ...prev,
+          govUk: {
+            ...prev.govUk,
+            environment: envData.articles ?? [],
+            businessAndIndustry: busData.articles ?? [],
+          },
+        }));
+      } catch (error) {
+        console.error("Failed to fetch news in provider:", error);
+      }
+    }
+
+    fetchArticles();
+  }, []);
 
   useEffect(() => {
-    const sources = [
-      { name: "The Guardian", key: "guardian" },
-      { name: "TechCrunch", key: "techCrunch" },
-      { name: "BBC UK", key: "bbc" },
-      { name: "Ars Technica", key: "arsTechnica" },
-      { name: "GOV.UK", key: "govUk" },
-    ] as const;
-
-    const fetchArticles = async (source: (typeof sources)[number]) => {
-      try {
-        const data = await getNews(source.name);
-
-        setNews(
-          source.key,
-          data.articles
-            .filter((article: any) => article.keyPoints !== null)
-            .slice(0, 12)
-            .map((article: any) => ({
-              ...article,
-              source: article.newspaper?.name ?? "Unknown",
-              keyPoints: article.keyPoints
-                ? {
-                    ...article.keyPoints,
-                    keyPoints:
-                      typeof article.keyPoints.keyPoints === "string"
-                        ? JSON.parse(article.keyPoints.keyPoints)
-                        : article.keyPoints.keyPoints,
-                  }
-                : null,
-            }))
-        );
-      } catch (error) {
-        console.error(`Error fetching ${source.name} articles:`, error);
-      }
-    };
-
-    // Fetch all sources in parallel
-    Promise.all(sources.map(fetchArticles)).catch((error) => {
-      console.error("Error fetching articles:", error);
-    });
-  }, []);
+    console.log("news", news);
+  }, [news]);
 
   return (
     <NewsContext.Provider value={{ news, setNews }}>

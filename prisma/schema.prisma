@@ -1,6 +1,6 @@
 datasource db {
   provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  url      = env("POSTGRES_PRISMA_URL")
 }
 
 generator client {
@@ -8,42 +8,57 @@ generator client {
 }
 
 model Newspaper {
-  id        Int       @id @default(autoincrement()) // Unique ID for each newspaper
-  name      String    @unique // Name of the newspaper
-  website   String?   @unique // Website URL of the newspaper (optional)
-  country   String? // Country of the newspaper (optional)
-  createdAt DateTime  @default(now()) // Timestamp when the newspaper was added
-  updatedAt DateTime  @updatedAt // Automatically updates on any changes
-  articles  Article[] // One-to-many relationship with articles
+  id         Int       @id @default(autoincrement())
+  name       String    @unique
+  website    String?   @unique
+  country    String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  sections   Section[]
+  articles   Article[]
+}
+
+model Section {
+  id          Int        @id @default(autoincrement())
+  name        String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  articles    Article[]
+  newspaper   Newspaper  @relation(fields: [newspaperId], references: [id])
+  newspaperId Int
+
+  @@unique([newspaperId, name])
 }
 
 model Article {
-  id          Int        @id @default(autoincrement()) // Unique ID for each article
-  headline    String     @db.Text // Headline of the article
-  mainImg     String? // URL of the main image (optional)
-  standFirst  String?    @db.Text // Subheadline or standfirst (optional)
-  text        String     @db.Text // Full text of the article
-  summary     String?    @db.Text // Summary of the article (optional)
-  sourceUrl   String     @unique // URL of the original article (unique)
-  tag         String // Tag for categorizing the article
-  createdAt   DateTime   @default(now()) // Timestamp when the article was added
-  updatedAt   DateTime   @updatedAt // Automatically updates on any changes
-  newspaperId Int // Foreign key to reference the newspaper
-  newspaper   Newspaper  @relation(fields: [newspaperId], references: [id]) // Relation to the Newspaper model
-  keyPoints   KeyPoints? // Changed to optional single relation
+  id          Int        @id @default(autoincrement())
+  headline    String     @db.Text
+  mainImg     String?
+  standFirst  String?    @db.Text
+  text        String     @db.Text
+  summary     String?    @db.Text
+  sourceUrl   String     @unique
+  tag         String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  sectionId   Int
+  section     Section    @relation(fields: [sectionId], references: [id])
+  newspaperId Int
+  newspaper   Newspaper  @relation(fields: [newspaperId], references: [id])
+  keyPoints   KeyPoints?
 }
 
 model Headlines {
-  id         Int      @id @default(autoincrement()) // Unique ID for each newspaper
+  id         Int      @id @default(autoincrement())
   headlines  String   @db.Text
-  createdAt  DateTime @default(now()) // Timestamp when the article was added
+  createdAt  DateTime @default(now())
   sourceUrls String[] @unique
 }
 
 model KeyPoints {
-  id        Int      @id @default(autoincrement()) // Unique ID for each newspaper
+  id        Int      @id @default(autoincrement())
   keyPoints Json     @db.Json
-  createdAt DateTime @default(now()) // Timestamp when the article was added
+  createdAt DateTime @default(now())
   article   Article  @relation(fields: [articleId], references: [id])
-  articleId Int      @unique // Added unique constraint
+  articleId Int      @unique
 }
