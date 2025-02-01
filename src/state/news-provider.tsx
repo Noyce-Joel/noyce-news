@@ -36,6 +36,7 @@ export type NewsSourceType = {
   techCrunch: ArticleType[];
   bbc: ArticleType[];
   arsTechnica: ArticleType[];
+  govUk: ArticleType[];
 };
 
 export type NewsContextType = {
@@ -53,6 +54,7 @@ export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
     techCrunch: [],
     bbc: [],
     arsTechnica: [],
+    govUk: [],
   });
 
   const setNews = (source: keyof NewsSourceType, articles: ArticleType[]) => {
@@ -68,6 +70,7 @@ export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
       { name: "TechCrunch", key: "techCrunch" },
       { name: "BBC UK", key: "bbc" },
       { name: "Ars Technica", key: "arsTechnica" },
+      { name: "GOV.UK", key: "govUk" },
     ] as const;
 
     const fetchArticles = async (source: (typeof sources)[number]) => {

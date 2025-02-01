@@ -7,7 +7,7 @@ export default function Loading() {
   useEffect(() => {
     const fetchTechLlama = async () => {
       try {
-        const data = await fetch("/api/common-takeaways");
+        const data = await fetch("/api/gov-uk");
         const json = await data.json();
         setData(json);
         console.log("json", json);
@@ -21,10 +21,7 @@ export default function Loading() {
   return (
     <div>
       <h1>Loading...</h1>
-      <div>
-       
-      </div>
+      <div></div>
     </div>
-
   );
 }
