@@ -21,13 +21,12 @@ export type ArticleType = {
     createdAt: string;
     updatedAt: string;
     article: ArticleType;
-    // keyPoints: string | null;  // remove this line
     keyPoints: {
       key_points: {
         title: string;
         content: string[];
       }[];
-    } | null; // or 'any' if you prefer
+    } | null;
   };
 };
 
