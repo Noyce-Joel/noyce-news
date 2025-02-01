@@ -5,15 +5,19 @@
       "schedule": "*/2 * * * *"
     },
     {
-      "path": "/api/takeaways",
-      "schedule": "*/2 * * * *"
-    },
-    {
       "path": "/api/gov-uk/business-and-industry",
       "schedule": "0 * * * *"
     },
     {
       "path": "/api/gov-uk/environment",
+      "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/gov-uk/money",
+      "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/gov-uk/government",
       "schedule": "0 * * * *"
     },
     {

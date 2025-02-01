@@ -1,7 +1,7 @@
 "use client";
 
-import React, { ReactNode } from "react";
-import { ArticleType, NewsSourceType } from "@/state/news-provider";
+import React, { ReactNode, useEffect } from "react";
+import { ArticleType } from "@/state/news-provider";
 import {
   Card,
   CardDescription,
@@ -23,47 +23,27 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { SiArstechnica } from "react-icons/si";
-import { TbBrandGuardian } from "react-icons/tb";
-import { SiTechcrunch } from "react-icons/si";
-import { FcBbc } from "react-icons/fc";
 import { ScrollArea } from "../ui/scroll-area";
 import GovUkIcon from "../icons/GovUkIcon";
 
 export default function NewsStories({ news }: { news: ArticleType[] }) {
   const articles = news || [];
+  
   if (articles.length === 0) return <div>No articles available</div>;
+ 
   const items = [
-    {
-      title: "The Guardian",
-      url: "/guardian",
-      icon: <TbBrandGuardian className="text-xl text-gray-400 w-8 h-auto" />,
-    },
-    {
-      title: "TechCrunch",
-      url: "/tech-crunch",
-      icon: <SiTechcrunch className="text-xl text-gray-400 w-8 h-auto" />,
-    },
-    {
-      title: "BBC UK",
-      url: "/bbc",
-      icon: <FcBbc className="text-xl text-gray-400 w-10 h-auto -ml-1" />,
-    },
-    {
-      title: "Ars Technica",
-      url: "/ars-technica",
-      icon: <SiArstechnica className="text-xl text-gray-400 w-8 h-auto" />,
-    },
     {
       title: "GOV.UK",
       url: "/gov-uk",
       icon: <GovUkIcon />,
     },
   ];
-  const getSourceIcon = (source: string) => {
-    const icon = items.find((icon) => icon.title === source);
+
+  const getSourceIcon = (source: any) => {
+    const icon = items.find((icon) => icon.title === source.name);
     return icon ? icon.icon : null;
   };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -102,6 +82,8 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
     },
   };
 
+  
+
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -137,88 +119,91 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
                       </CardTitle>
                     </DialogTrigger>
                     <CardDescription className="text-sm text-gray-500 flex lg:flex-row flex-col gap-2 lg:gap-4 md:pt-4 uppercase">
-                      {formatDate(article.createdAt)} <span className="hidden lg:block">|</span>{" "}
-                      <Badge className="w-fit">{article.tag.toUpperCase()}</Badge>
+                      {formatDate(article.createdAt)}{" "}
+                      <span className="hidden lg:block">|</span>{" "}
+                      <Badge className="w-fit">
+                        {article.tag.toUpperCase()}
+                      </Badge>
                     </CardDescription>
                   </CardHeader>
                 </Card>
                 <DialogContent className="md:max-w-screen-lg h-[95vh] w-[95vw] md:p-12 p-0  border-gray-400 flex flex-col gap-4">
                   <ScrollArea className="border-gray-400 flex flex-col gap-4">
                     <DialogHeader className="mt-8 md:mt-0">
-                    <DialogTitle className="md:flex hidden md:text-4xl text-2xl font-semibold leading-tight mb-4 px-4 md:px-0">
-                      {article.standFirst}{" "}
-                    </DialogTitle>
-                    <div className="text-sm text-gray-500 flex flex-col md:flex-row gap-4 items-center">
-                      <div className="flex gap-4 items-center">
-                        <span className="flex items-center gap-2 text-white">
-                          {getSourceIcon(article.source) as ReactNode}
-                        </span>{" "}
-                        <span className="hidden md:block"> |</span>
-                        <Button
-                          variant="outline"
-                          className="h-6 rounded-lg text-xs"
-                        >
-                          <Link target="_blank" href={article.sourceUrl}>
-                            READ MORE
-                          </Link>
-                        </Button>
-                        <span className="hidden md:block"> |</span>
+                      <DialogTitle className="md:flex hidden md:text-4xl text-2xl font-semibold leading-tight mb-4 px-4 md:px-0">
+                        {article.standFirst}{" "}
+                      </DialogTitle>
+                      <div className="text-sm text-gray-500 flex flex-col md:flex-row gap-4 items-center">
+                        <div className="flex gap-4 items-center">
+                          <span className="flex items-center gap-2 text-white">
+                            {getSourceIcon(article.newspaper) as ReactNode}
+                          </span>{" "}
+                          <span className="hidden md:block"> |</span>
+                          <Button
+                            variant="outline"
+                            className="h-6 rounded-lg text-xs"
+                          >
+                            <Link target="_blank" href={article.sourceUrl}>
+                              READ MORE
+                            </Link>
+                          </Button>
+                          <span className="hidden md:block"> |</span>
+                        </div>
+                        <div className="flex gap-4 items-center">
+                          <span className="uppercase">
+                            {formatDate(article.createdAt)}
+                          </span>
+                          <span className="hidden md:block"> |</span>
+                          <Badge>{article.tag.toUpperCase()}</Badge>
+                        </div>
                       </div>
-                      <div className="flex gap-4 items-center">
-                        <span className="uppercase">
-                          {formatDate(article.createdAt)}
-                        </span>
-                        <span className="hidden md:block"> |</span>
-                        <Badge>{article.tag.toUpperCase()}</Badge>
-                      </div>
-                    </div>
-                  </DialogHeader>
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    transition={{ duration: 0.5 }}
-                    className="mt-4 ml-4"
-                  >
-                    {article.mainImg && (
-                      <div className="md:float-right md:w-[30vw] md:ml-6 md:mb-4 mb-8 mr-4">
-                        <AspectRatio ratio={16 / 9}>
-                          <Image
-                            src={article.mainImg}
-                            alt={article.headline}
-                            className="rounded-lg object-cover"
-                            fill
-                            sizes="(max-width: 768px) 100vw, 50vw"
-                            priority={true}
-                          />
-                        </AspectRatio>
-                      </div>
-                    )}
-                     <DialogTitle className="md:hidden flex md:text-4xl text-2xl font-semibold leading-tight mb-8 px-4 md:px-0">
+                    </DialogHeader>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      transition={{ duration: 0.5 }}
+                      className="mt-4 ml-4"
+                    >
+                      {article.mainImg && (
+                        <div className="md:float-right md:w-[30vw] md:ml-6 md:mb-4 mb-8 mr-4">
+                          <AspectRatio ratio={16 / 9}>
+                            <Image
+                              src={article.mainImg}
+                              alt={article.headline}
+                              className="rounded-lg object-cover"
+                              fill
+                              sizes="(max-width: 768px) 100vw, 50vw"
+                              priority={true}
+                            />
+                          </AspectRatio>
+                        </div>
+                      )}
+                      <DialogTitle className="md:hidden flex md:text-4xl text-2xl font-semibold leading-tight mb-8 px-4 md:px-0">
                         {article.standFirst}{" "}
                       </DialogTitle>
 
-                    <div className="prose max-w-none text-base text-white md:text-justify">
-                      {article.keyPoints?.keyPoints?.key_points?.map(
-                        (keyPoint, idx) => (
-                          <div
-                            key={keyPoint.title}
-                            className="md:px-8 px-4 border-l border-gray-700  mb-12"
-                          >
-                            <h3 className="text-xl font-semibold mb-2">
-                              {keyPoint.title}
-                            </h3>
-                            <ul className="prose prose-invert">
-                              {keyPoint.content.map((content, i) => (
-                                <li key={i} className=" mb-2">
-                                  {content}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )
-                      )}
-                    </div>
-                    {/* <h2 className="text-2xl font-medium mb-2">Summary</h2>
+                      <div className="prose max-w-none text-base text-white ">
+                        {article.keyPoints?.keyPoints?.key_points?.map(
+                          (keyPoint, idx) => (
+                            <div
+                              key={keyPoint.title}
+                              className="md:px-8 px-4 border-l border-gray-700  mb-12"
+                            >
+                              <h3 className="text-xl font-semibold mb-2">
+                                {keyPoint.title}
+                              </h3>
+                              <ul className="prose prose-invert">
+                                {keyPoint.content.map((content, i) => (
+                                  <li key={i} className=" mb-2">
+                                    {content}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )
+                        )}
+                      </div>
+                      {/* <h2 className="text-2xl font-medium mb-2">Summary</h2>
                     <div className="prose max-w-none">
                       <DialogDescription className=" text-base text-white text-justify">
                         {article.summary?.split("\n\n").map((paragraph, i) => (
@@ -228,7 +213,7 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
                         ))}
                       </DialogDescription>
                     </div> */}
-                  </motion.div>
+                    </motion.div>
                   </ScrollArea>
                 </DialogContent>
               </Dialog>

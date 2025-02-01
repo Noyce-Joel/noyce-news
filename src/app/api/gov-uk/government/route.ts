@@ -10,7 +10,7 @@ export const maxDuration = 300;
 
 export async function GET() {
   const paperUrl =
-    "https://www.gov.uk/search/news-and-communications?level_one_taxon=495afdb6-47be-4df1-8b38-91c8adb1eefc&order=updated-newest";
+    "https://www.gov.uk/search/news-and-communications?level_one_taxon=e48ab80a-de80-4e83-bf59-26316856a5f9&order=updated-newest";
 
   if (!paperUrl) {
     return NextResponse.json(
@@ -110,7 +110,7 @@ export async function GET() {
 
       let section = await prisma.section.findFirst({
         where: {
-          name: "Business and Industry",
+          name: "Government",
           newspaperId: newspaper?.id,
         },
       });
@@ -130,8 +130,8 @@ export async function GET() {
       if (!section) {
         section = await prisma.section.create({
           data: {
-            name: "Business and Industry",
-            newspaperId: newspaper?.id,
+            name: "Government",
+            newspaperId: newspaper.id,
           },
         });
       }
@@ -149,7 +149,7 @@ export async function GET() {
             mainImg: article.mainImg || null,
             sourceUrl: article.sourceUrl,
             tag: article.tag || "",
-            summary: null, 
+            summary: null,
             newspaperId: newspaper.id,
             sectionId: section.id,
           },

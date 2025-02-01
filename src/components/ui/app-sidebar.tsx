@@ -1,6 +1,6 @@
 "use client";
 
-import { TbBuildingCommunity, TbSphere } from "react-icons/tb";
+import { TbBuildingCommunity, TbBusinessplan, TbSphere, TbWorldHeart } from "react-icons/tb";
 import {
   Sidebar,
   SidebarContent,
@@ -27,12 +27,12 @@ const items = [
       {
         title: "Environment",
         url: "/gov-uk/environment",
-        icon: <TbSphere />,
+        icon: <TbWorldHeart className="stroke-gray-400" />,
       },
       {
         title: "Business and Industry",
         url: "/gov-uk/business-and-industry",
-        icon: <TbBuildingCommunity />,
+        icon: <TbBusinessplan className="stroke-gray-400"  />,
       },
     ],
   },
@@ -75,12 +75,13 @@ export function AppSidebar() {
                   key={item.title}
                   className="transition-all duration-200"
                 >
-                  <SidebarMenuButton className="relative flex items-center justify-start gap-2">
-                    
+                  <SidebarMenuButton className="relative flex items-center justify-start gap-2 hover:bg-transparent hover:cursor-default">
+                    <a className="flex items-center justify-start gap-2">
                       {item.icon}
                       <span className="text-xl font-bold whitespace-nowrap">
                         {item.title}
                       </span>
+                    </a>
                   </SidebarMenuButton>
                   {item.subItems && (
                     <SidebarMenuSub>

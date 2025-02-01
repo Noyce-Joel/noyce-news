@@ -21,7 +21,7 @@ export async function GET() {
         keyPoints: null,
         newspaper: {
           name: {
-            in: ["TechCrunch", "Ars Technica"],
+            in: ["GOV.UK"],
           },
         },
       },

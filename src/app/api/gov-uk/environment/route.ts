@@ -136,13 +136,11 @@ export async function GET() {
         });
       }
 
-      // Check if the article already exists
       const existingArticle = await prisma.article.findUnique({
         where: { sourceUrl: article.sourceUrl },
       });
 
       if (!existingArticle) {
-        // Create the article linked to the Guardian newspaper
         const savedArticle = await prisma.article.create({
           data: {
             headline: article.headline,
@@ -151,9 +149,9 @@ export async function GET() {
             mainImg: article.mainImg || null,
             sourceUrl: article.sourceUrl,
             tag: article.tag || "",
-            summary: null, // No summary yet
-            newspaperId: newspaper.id, // Link to the Guardian newspaper
-            sectionId: section.id, // Add the section ID
+            summary: null,
+            newspaperId: newspaper.id,
+            sectionId: section.id,
           },
         });
         storedArticles.push(savedArticle);

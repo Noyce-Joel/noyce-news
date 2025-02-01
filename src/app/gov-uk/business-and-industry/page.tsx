@@ -10,7 +10,9 @@ import { useEffect } from "react";
 
 export default function Home() {
   const { news } = useArticles();
-  
+  useEffect(() => {
+    console.log("news", news);
+  }, [news]);
   if (news.govUk.businessAndIndustry.length > 0) {
     return <NewsStories news={news.govUk.businessAndIndustry} />;
   }

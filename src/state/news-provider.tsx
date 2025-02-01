@@ -28,6 +28,11 @@ export type ArticleType = {
       }[];
     } | null;
   };
+  newspaper: {
+    id: string;
+    name: string;
+    url: string;
+  };
 };
 
 export type NewsSourceType = {
