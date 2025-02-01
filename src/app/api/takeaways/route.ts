@@ -7,13 +7,13 @@ import { zodResponseFormat } from "openai/helpers/zod";
 const prisma = new PrismaClient();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const KeyPoint = z.object({
-    title: z.string(),
-    content: z.array(z.string()),
-  });
-  
-  const KeyPointsSchema = z.object({
-    key_points: z.array(KeyPoint),
-  });
+  title: z.string(),
+  content: z.array(z.string()),
+});
+
+const KeyPointsSchema = z.object({
+  key_points: z.array(KeyPoint),
+});
 export async function GET() {
   try {
     const article = await prisma.article.findFirst({
@@ -38,6 +38,12 @@ export async function GET() {
 
     const systemPrompt = `You are an AI assistant that processes fintech news articles to create concise, VC-focused summaries for investors.
 
+    Important: Your summaries must be transformative and avoid any copyright infringement. Do not copy or use verbatim text from the original article. Instead:
+                - Completely rephrase and restructure the information in your own words
+                - Focus on extracting and synthesizing the key facts rather than reproducing the original text
+                - Ensure the summary represents a new, original work that conveys the essential information while being distinctly different from the source material
+
+
     Your task:
     1. Read the provided fintech news article.
     2. Produce a concise summary tailored for Moonfire's investors, emphasizing:
@@ -60,7 +66,7 @@ export async function GET() {
           content: text,
         },
       ],
-      temperature: 0.8,
+      temperature: 0.1,
       max_tokens: 2000,
       response_format: zodResponseFormat(KeyPointsSchema, "key_points"),
     });

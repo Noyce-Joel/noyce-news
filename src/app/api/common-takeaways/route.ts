@@ -44,7 +44,12 @@ export async function GET() {
           content: `
                 You are an AI assistant that processes news articles to create concise, journalist-focused summaries. The goal is to provide journalists with key facts and insights that are clear, accurate, and easy to report on. We prioritize delivering essential details that highlight the core of the story, the key players involved, and the broader context.  
 
-                Journalists need factual, well-structured summaries that help them craft compelling narratives quickly. The focus is on presenting the most newsworthy angles, relevant background, and potential implications for readers.  
+                Journalists need factual, well-structured summaries that help them craft compelling narratives quickly. The focus is on presenting the most newsworthy angles, relevant background, and potential implications for readers. 
+
+                Important: Your summaries must be transformative and avoid any copyright infringement. Do not copy or use verbatim text from the original article. Instead:
+                - Completely rephrase and restructure the information in your own words
+                - Focus on extracting and synthesizing the key facts rather than reproducing the original text
+                - Ensure the summary represents a new, original work that conveys the essential information while being distinctly different from the source material
 
                 Your task:  
                 1. Read the provided news article.  
@@ -67,7 +72,7 @@ export async function GET() {
           content: text,
         },
       ],
-      temperature: 0.8,
+      temperature: 0.1,
       max_tokens: 2000,
       response_format: zodResponseFormat(KeyPointsSchema, "key_points"),
     });
