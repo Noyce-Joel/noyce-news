@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { SiLinksys, SiSky, SiTechcrunch } from "react-icons/si";
+import { SiSky, SiTechcrunch } from "react-icons/si";
 import { TbBrandGuardian } from "react-icons/tb";
 import { Newspaper } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -48,7 +48,7 @@ export const sourceIcons = [
   },
 ];
 
-export default function HeadlinesSourceUrls({
+export default function HeadlinesSources({
   sourceUrls,
 }: {
   sourceUrls: string[];

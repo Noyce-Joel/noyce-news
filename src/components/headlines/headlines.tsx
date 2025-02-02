@@ -3,8 +3,8 @@
 import { getLatestHeadlines } from "@/lib/actions";
 import { HeadlinesType } from "@/lib/types";
 import React, { useEffect, useState } from "react";
-import HeadlinesSourceUrls from "./headlines-sourceUrls";
 import AudioVisualizer from "./audio-visualiser";
+import HeadlinesSources from "./headlines-sources";
 
 export default function Headlines() {
   const [headlines, setHeadlines] = useState<HeadlinesType | null>(null);
@@ -29,7 +29,7 @@ export default function Headlines() {
   return (
     <div className="relative">
       <div className="absolute flex justify-center -bottom-4 right-0 left-0 mx-auto z-50">
-        <HeadlinesSourceUrls sourceUrls={headlines?.sourceUrls || []} />
+        <HeadlinesSources sourceUrls={headlines?.sourceUrls || []} />
       </div>
       <AudioVisualizer />
     </div>

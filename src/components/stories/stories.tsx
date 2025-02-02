@@ -25,12 +25,18 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { ScrollArea } from "../ui/scroll-area";
 import GovUkIcon from "../icons/GovUkIcon";
+import {
+  TbBuildingCommunity,
+  TbBusinessplan,
+  TbReportMoney,
+  TbWorldHeart,
+} from "react-icons/tb";
 
-export default function NewsStories({ news }: { news: ArticleType[] }) {
+export default function Stories({ news }: { news: ArticleType[] }) {
   const articles = news || [];
-  
+
   if (articles.length === 0) return <div>No articles available</div>;
- 
+
   const items = [
     {
       title: "GOV.UK",
@@ -39,8 +45,36 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
     },
   ];
 
+  const sections = [
+    {
+      title: "Environment",
+      url: "/gov-uk/environment",
+      icon: <TbWorldHeart className=" h-5 w-5" />,
+    },
+    {
+      title: "Business and Industry",
+      url: "/gov-uk/business-and-industry",
+      icon: <TbBusinessplan className=" h-5 w-5" />,
+    },
+    {
+      title: "Government",
+      url: "/gov-uk/government",
+      icon: <TbBuildingCommunity className=" h-5 w-5" />,
+    },
+    {
+      title: "Money",
+      url: "/gov-uk/money",
+      icon: <TbReportMoney className=" h-5 w-5" />,
+    },
+  ];
+
   const getSourceIcon = (source: any) => {
     const icon = items.find((icon) => icon.title === source.name);
+    return icon ? icon.icon : null;
+  };
+
+  const getSectionIcon = (section: any) => {
+    const icon = sections.find((icon) => icon.title === section.name);
     return icon ? icon.icon : null;
   };
 
@@ -82,12 +116,10 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
     },
   };
 
-  
-
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        className="max-w-screen-xl mx-auto px-4 py-6"
+        className="max-w-screen-xl mx-auto px-4"
         initial="hidden"
         animate="visible"
         whileInView="whileInView"
@@ -95,10 +127,16 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
         variants={containerVariants}
       >
         <motion.header
-          className="pb-4 mb-6 border-b border-gray-400 flex justify-between items-center"
+          className="sticky top-0 z-50 bg-black py-6 pb-4 mb-6 border-b border-gray-400 flex justify-between items-center"
           variants={itemVariants}
         >
-          <h1 className="text-2xl font-bold">{news[0].source}</h1>
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            {news[0].newspaper.name}{" "}
+            <span className="text-sm text-gray-600 uppercase">| </span>
+            <span className="text-gray-600 uppercase">
+              {news[0].section.name}
+            </span>
+          </h1>
           <div className="text-sm text-gray-600 uppercase">
             {formatDate(new Date().toLocaleDateString())}
           </div>
@@ -121,7 +159,7 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
                     <CardDescription className="text-sm text-gray-500 flex lg:flex-row flex-col gap-2 lg:gap-4 md:pt-4 uppercase">
                       {formatDate(article.createdAt)}{" "}
                       <span className="hidden lg:block">|</span>{" "}
-                      <Badge className="w-fit">
+                      <Badge className="max-w-[300px] inline-block truncate">
                         {article.tag.toUpperCase()}
                       </Badge>
                     </CardDescription>
@@ -135,8 +173,11 @@ export default function NewsStories({ news }: { news: ArticleType[] }) {
                       </DialogTitle>
                       <div className="text-sm text-gray-500 flex flex-col md:flex-row gap-4 items-center">
                         <div className="flex gap-4 items-center">
-                          <span className="flex items-center gap-2 text-white">
+                          <span className="flex items-center gap-2 text-white relative">
                             {getSourceIcon(article.newspaper) as ReactNode}
+                            <span className="text-white absolute -bottom-2 -right-2">
+                              {getSectionIcon(article.section) as ReactNode}
+                            </span>
                           </span>{" "}
                           <span className="hidden md:block"> |</span>
                           <Button

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import Headlines from "@/components/the-headlines/headlines";
+import Headlines from "@/components/headlines/headlines";
 import { useArticles } from "@/state/news-provider";
 import { Newspaper, Radio, Sparkles } from "lucide-react";
 
@@ -21,8 +21,10 @@ export default function Home() {
             consume news.
           </h1>
           <p className="text-gray-400 text-lg mb-12 leading-relaxed">
-            News Freed is a work in progress, built for busy days when I don&apos;t want to read full-length news articles.
-            It uses AI to summarise stories from trusted sources and generate audio headlines hourly that are read by a personal news anchor.
+            News Freed is a work in progress, built for busy days when I
+            don&apos;t want to read full-length news articles. It uses AI to
+            summarise stories from trusted sources and generate audio headlines
+            hourly that are read by a personal news anchor.
           </p>
           <div className="border-t border-gray-800 pt-8">
             <div className="flex space-x-6">
@@ -43,11 +45,9 @@ export default function Home() {
         </div>
       </section>
 
-      
-        <div className="text-sm text-gray-400 absolute bottom-12 right-12">
-          Built with 🤔 by Joel Noyce
-        </div>
-
+      <div className="text-sm text-gray-400 absolute bottom-12 right-12">
+        Built with 🤔 by Joel Noyce
+      </div>
     </div>
   );
 }

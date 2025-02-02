@@ -15,7 +15,6 @@ export function KeyPointsDisplay({ rawKeyPoints }: { rawKeyPoints: string }) {
       const parsed = JSON.parse(raw);
       return parsed as FormattedKeyPoints;
     } catch {
-      // If not JSON, try to parse the raw markdown-like text
       const sections = raw.split("\n\n");
 
       const headline = sections[0]?.replace("**Headline**:", "").trim() || "";

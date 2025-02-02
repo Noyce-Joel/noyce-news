@@ -8,8 +8,8 @@ import { useArticles } from "@/state/news-provider";
 export default function Home() {
   const { news } = useArticles();
 
-  if (news.govUk.environment.length > 0) {
-    return <Stories news={news.govUk.environment} />;
+  if (news.govUk.government.length > 0) {
+    return <Stories news={news.govUk.government} />;
   }
   return <Loading />;
 }

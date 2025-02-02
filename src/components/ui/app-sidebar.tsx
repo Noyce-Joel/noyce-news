@@ -1,6 +1,13 @@
 "use client";
 
-import { TbBuildingCommunity, TbBusinessplan, TbSphere, TbWorldHeart } from "react-icons/tb";
+import {
+  TbBuildingCommunity,
+  TbBusinessplan,
+  TbMoneybag,
+  TbReportMoney,
+  TbSphere,
+  TbWorldHeart,
+} from "react-icons/tb";
 import {
   Sidebar,
   SidebarContent,
@@ -14,7 +21,7 @@ import {
   SidebarMenuSubButton,
   useSidebar,
 } from "@/components/ui/sidebar";
-import Headlines from "../the-headlines/headlines";
+import Headlines from "../headlines/headlines";
 import Link from "next/link";
 import GovUkIcon from "../icons/GovUkIcon";
 
@@ -32,7 +39,17 @@ const items = [
       {
         title: "Business and Industry",
         url: "/gov-uk/business-and-industry",
-        icon: <TbBusinessplan className="stroke-gray-400"  />,
+        icon: <TbBusinessplan className="stroke-gray-400" />,
+      },
+      {
+        title: "Government",
+        url: "/gov-uk/government",
+        icon: <TbBuildingCommunity className="stroke-gray-400" />,
+      },
+      {
+        title: "Money",
+        url: "/gov-uk/money",
+        icon: <TbReportMoney className="stroke-gray-400" />,
       },
     ],
   },
@@ -78,7 +95,13 @@ export function AppSidebar() {
                   <SidebarMenuButton className="relative flex items-center justify-start gap-2 hover:bg-transparent hover:cursor-default">
                     <a className="flex items-center justify-start gap-2">
                       {item.icon}
-                      <span className="text-xl font-bold whitespace-nowrap">
+                      <span
+                        className="text-xl font-bold whitespace-nowrap "
+                        style={{
+                          opacity: open ? 1 : 0,
+                          transition: "opacity 0.1s ease-in-out",
+                        }}
+                      >
                         {item.title}
                       </span>
                     </a>

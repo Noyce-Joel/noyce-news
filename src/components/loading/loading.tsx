@@ -12,7 +12,7 @@ interface VideoPlayerProps {
   currentTime?: number;
 }
 
-export const NewsLoadingStates: FC<VideoPlayerProps> = ({
+export const Loading: FC<VideoPlayerProps> = ({
   src = "/globe-2.mp4",
   width = "100%",
   height = "auto",

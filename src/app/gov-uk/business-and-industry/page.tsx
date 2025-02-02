@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { NewsLoadingStates } from "@/components/loading/news-loading-states";
-import NewsStories from "@/components/stories/news-stories";
-import { getNews } from "@/lib/actions";
+import { Loading } from "@/components/loading/loading";
+import Stories from "@/components/stories/stories";
 
 import { useArticles } from "@/state/news-provider";
 import { useEffect } from "react";
@@ -14,7 +12,7 @@ export default function Home() {
     console.log("news", news);
   }, [news]);
   if (news.govUk.businessAndIndustry.length > 0) {
-    return <NewsStories news={news.govUk.businessAndIndustry} />;
+    return <Stories news={news.govUk.businessAndIndustry} />;
   }
-  return <NewsLoadingStates />;
+  return <Loading />;
 }

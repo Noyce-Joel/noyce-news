@@ -33,12 +33,19 @@ export type ArticleType = {
     name: string;
     url: string;
   };
+  section: {
+    id: string;
+    name: string;
+    url: string;
+  };
 };
 
 export type NewsSourceType = {
   govUk: {
     environment: ArticleType[];
     businessAndIndustry: ArticleType[];
+    government: ArticleType[];
+    money: ArticleType[];
   };
 };
 
@@ -56,15 +63,19 @@ export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
     govUk: {
       environment: [],
       businessAndIndustry: [],
+      government: [],
+      money: [],
     },
   });
 
   useEffect(() => {
     async function fetchArticles() {
       try {
-        const [envData, busData] = await Promise.all([
+        const [envData, busData, govData, moneyData] = await Promise.all([
           getNews("GOV.UK", "Environment"),
           getNews("GOV.UK", "Business and Industry"),
+          getNews("GOV.UK", "Government"),
+          getNews("GOV.UK", "Money"),
         ]);
 
         setNews((prev) => ({
@@ -73,6 +84,8 @@ export const NewsProvider = ({ children }: { children: React.ReactNode }) => {
             ...prev.govUk,
             environment: envData.articles ?? [],
             businessAndIndustry: busData.articles ?? [],
+            government: govData.articles ?? [],
+            money: moneyData.articles ?? [],
           },
         }));
       } catch (error) {

@@ -2,15 +2,31 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: [
-      "i.guim.co.uk",
-      "techcrunch.com",
-      "ichef.bbci.co.uk",
-      "via.placeholder.com",
-      "e3.365dm.com",
-      "cdn.arstechnica.net",
-      "cdn.worldweatheronline.com",
-      "assets.publishing.service.gov.uk",
+    remotePatterns: [
+      {
+        hostname: "i.guim.co.uk",
+      },
+      {
+        hostname: "techcrunch.com",
+      },
+      {
+        hostname: "ichef.bbci.co.uk",
+      },
+      {
+        hostname: "via.placeholder.com",
+      },
+      {
+        hostname: "e3.365dm.com",
+      },
+      {
+        hostname: "cdn.arstechnica.net",
+      },
+      {
+        hostname: "cdn.worldweatheronline.com",
+      },
+      {
+        hostname: "assets.publishing.service.gov.uk",
+      },
     ],
   },
 };

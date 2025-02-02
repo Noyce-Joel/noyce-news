@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/common-takeaways",
+      "path": "/api/key-points",
       "schedule": "*/2 * * * *"
     },
     {

@@ -131,7 +131,7 @@ const AudioVisualizer = () => {
 
   return (
     <div
-      className={`relative flex justify-center items-center w-28 h-28 mx-auto border-2 border-white bg-black rounded-full`}
+      className={`relative flex justify-center items-center w-28 h-28 mx-auto bg-black rounded-full`}
     >
       <canvas
         ref={canvasRef}
