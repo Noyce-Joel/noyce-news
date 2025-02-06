@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-
+export const maxDuration = 300;
 export async function GET() {
   try {
     const article = await prisma.article.findFirst({
