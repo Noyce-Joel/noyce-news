@@ -71,5 +71,5 @@ model Url {
   sentiment String
   leaning   String
   article   Article  @relation(fields: [articleId], references: [id])
-  articleId Int      @unique
+  articleId Int
 }

@@ -20,19 +20,35 @@ export async function GET() {
       );
     }
 
-    const response = await fetch(`${process.env.GOV_CREW_URL}`, {
-      method: "POST",
-      body: JSON.stringify({ headline: article.headline }),
-    });
-    const urls = await response.json();
+    const response = await fetch(
+      `https://gov-crew-image-469076111774.europe-west2.run.app/run-crew`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          topic: article.headline,
+          OPENAI_API_KEY: process.env.OPENAI_API_KEY!,
+          SERPER_API_KEY: process.env.SERPER_API_KEY!,
+        }),
+      }
+    );
+    console.log("Crew API response status:", response.status);
+    const responseData = await response.json();
+    console.log("Crew API response data:", responseData);
+
+    const cleanedRawData = responseData.result.raw.replace(/```/g, "").trim();
+    const urls = JSON.parse(cleanedRawData);
+    console.log("Parsed URLs:", urls);
 
     const urlPromises = urls.map(
-      (url: { url: string; sentiment: string; leaning: string }) => {
+      (url: { url: string; sentiment: string; political_leaning: string }) => {
         return prisma.url.create({
           data: {
             url: url.url,
             sentiment: url.sentiment,
-            leaning: url.leaning,
+            leaning: url.political_leaning,
             articleId: article.id,
           },
         });
@@ -41,9 +57,9 @@ export async function GET() {
 
     await Promise.all(urlPromises);
 
-    return NextResponse.json({ success: true, articleId: article.id });
+    return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("Error running Crew:", err);
+    console.error("Error in /api/run-crew:", err);
     return NextResponse.json({ error: "Failed to run Crew" }, { status: 500 });
   }
 }

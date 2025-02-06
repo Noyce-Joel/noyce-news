@@ -8,14 +8,10 @@ export default function Loading() {
   useEffect(() => {
     const fetchTechLlama = async () => {
       try {
-        const data = await fetch("/api/gov-uk/environment");
-        const data2 = await fetch("/api/gov-uk/business-and-industry");
+        const data = await fetch("/api/run-crew");
         const json = await data.json();
-        const json2 = await data2.json();
         setData(json);
-        setData2(json2);
         console.log("json", json);
-        console.log("json2", json2);
       } catch (error) {
         console.error(error);
       }
