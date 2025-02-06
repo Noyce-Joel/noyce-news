@@ -34,13 +34,9 @@ export async function GET() {
         }),
       }
     );
-    console.log("Crew API response status:", response.status);
     const responseData = await response.json();
-    console.log("Crew API response data:", responseData);
-
     const cleanedRawData = responseData.result.raw.replace(/```/g, "").trim();
     const urls = JSON.parse(cleanedRawData);
-    console.log("Parsed URLs:", urls);
 
     const urlPromises = urls.map(
       (url: { url: string; sentiment: string; political_leaning: string }) => {
