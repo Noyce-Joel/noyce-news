@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const article = await prisma.article.findFirst({
       where: {
@@ -20,13 +20,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const response = await fetch(
-      `${process.env.GOV_CREW_URL}`,
-      {
-        method: "POST",
-        body: JSON.stringify({ headline: article.headline }),
-      }
-    );
+    const response = await fetch(`${process.env.GOV_CREW_URL}`, {
+      method: "POST",
+      body: JSON.stringify({ headline: article.headline }),
+    });
     const urls = await response.json();
 
     const urlPromises = urls.map(

@@ -34,7 +34,7 @@
     },
     {
       "path": "/api/run-crew",
-      "schedule": "*/5 * * * *"
+      "schedule": "*/2 * * * *"
     }
   ]
 }
