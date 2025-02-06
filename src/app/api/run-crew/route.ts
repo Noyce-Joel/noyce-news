@@ -20,10 +20,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(process.env.GOV_CREW_URL!, {
-      method: "POST",
-      body: JSON.stringify({ headline: article.headline }),
-    });
+    const response = await fetch(
+      "https://gov-crew-image-469076111774.europe-west2.run.app/run-crew",
+      {
+        method: "POST",
+        body: JSON.stringify({ headline: article.headline }),
+      }
+    );
     const urls = await response.json();
 
     const urlPromises = urls.map(
