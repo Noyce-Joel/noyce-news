@@ -38,6 +38,12 @@ export type ArticleType = {
     name: string;
     url: string;
   };
+  urls: {
+    url: string;
+    sentiment: string;
+    leaning: string;
+    title: string;
+  }[];
 };
 
 export type NewsSourceType = {

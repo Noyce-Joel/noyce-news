@@ -31,6 +31,7 @@ import {
   TbReportMoney,
   TbWorldHeart,
 } from "react-icons/tb";
+import RelevantReading from "../relevant-reading/relevant-reading";
 
 export default function Stories({ news }: { news: ArticleType[] }) {
   const articles = news || [];
@@ -223,7 +224,7 @@ export default function Stories({ news }: { news: ArticleType[] }) {
                         {article.standFirst}{" "}
                       </DialogTitle>
 
-                      <div className="prose max-w-none text-base text-white ">
+                      <div className="prose max-w-none text-base text-white mt-10">
                         {article.keyPoints?.keyPoints?.key_points?.map(
                           (keyPoint, idx) => (
                             <div
@@ -244,16 +245,7 @@ export default function Stories({ news }: { news: ArticleType[] }) {
                           )
                         )}
                       </div>
-                      {/* <h2 className="text-2xl font-medium mb-2">Summary</h2>
-                    <div className="prose max-w-none">
-                      <DialogDescription className=" text-base text-white text-justify">
-                        {article.summary?.split("\n\n").map((paragraph, i) => (
-                          <span key={i} className="mb-4">
-                            {paragraph}
-                          </span>
-                        ))}
-                      </DialogDescription>
-                    </div> */}
+                      <RelevantReading articles={article.urls} />
                     </motion.div>
                   </ScrollArea>
                 </DialogContent>

@@ -22,8 +22,9 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: "desc" },
       include: {
         newspaper: true,
-        section: true, 
+        section: true,
         keyPoints: true,
+        urls: true,
       },
     });
 

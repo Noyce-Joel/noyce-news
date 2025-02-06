@@ -34,18 +34,37 @@ export async function GET() {
         }),
       }
     );
+
     const responseData = await response.json();
+
+    // Ensure that responseData.result and responseData.result.raw are defined
+    if (!responseData?.result?.raw) {
+      console.error("Missing raw data. Received response data:", responseData);
+      return NextResponse.json(
+        { error: "Invalid response from run-crew" },
+        { status: 500 }
+      );
+    }
+
     const cleanedRawData = responseData.result.raw.replace(/```/g, "").trim();
+    console.log("cleanedRawData", cleanedRawData);
+
     const urls = JSON.parse(cleanedRawData);
 
     const urlPromises = urls.map(
-      (url: { url: string; sentiment: string; political_leaning: string }) => {
+      (url: {
+        url: string;
+        sentiment: string;
+        political_leaning: string;
+        title: string;
+      }) => {
         return prisma.url.create({
           data: {
             url: url.url,
             sentiment: url.sentiment,
             leaning: url.political_leaning,
             articleId: article.id,
+            title: url.title === "Not Provided" ? "" : url.title,
           },
         });
       }
