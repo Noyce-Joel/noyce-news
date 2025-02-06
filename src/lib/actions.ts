@@ -169,3 +169,15 @@ export async function getSummaryFromArticleId(articleId: any) {
   return summary;
 }
 
+export async function runCrew(headline: string) {
+  try {
+    const response = await fetch(process.env.GOV_CREW_URL!, {
+      method: "POST",
+      body: JSON.stringify({ headline }),
+    });
+    return response.json();
+  } catch (error) {
+    console.error("Error running Crew:", error);
+    throw error instanceof Error ? error : new Error("Failed to run Crew");
+  }
+}

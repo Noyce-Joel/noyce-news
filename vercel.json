@@ -1,6 +1,10 @@
 {
   "crons": [
     {
+      "path": "/api/run-crew",
+      "schedule": "*/5 * * * *"
+    },
+    {
       "path": "/api/key-points",
       "schedule": "*/2 * * * *"
     },

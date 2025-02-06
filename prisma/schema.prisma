@@ -8,23 +8,23 @@ generator client {
 }
 
 model Newspaper {
-  id         Int       @id @default(autoincrement())
-  name       String    @unique
-  website    String?   @unique
-  country    String?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  sections   Section[]
-  articles   Article[]
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  website   String?   @unique
+  country   String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  sections  Section[]
+  articles  Article[]
 }
 
 model Section {
-  id          Int        @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   articles    Article[]
-  newspaper   Newspaper  @relation(fields: [newspaperId], references: [id])
+  newspaper   Newspaper @relation(fields: [newspaperId], references: [id])
   newspaperId Int
 
   @@unique([newspaperId, name])
@@ -46,6 +46,7 @@ model Article {
   newspaperId Int
   newspaper   Newspaper  @relation(fields: [newspaperId], references: [id])
   keyPoints   KeyPoints?
+  urls        Url[]
 }
 
 model Headlines {
@@ -59,6 +60,16 @@ model KeyPoints {
   id        Int      @id @default(autoincrement())
   keyPoints Json     @db.Json
   createdAt DateTime @default(now())
+  article   Article  @relation(fields: [articleId], references: [id])
+  articleId Int      @unique
+}
+
+model Url {
+  id        Int      @id @default(autoincrement())
+  url       String   @unique
+  createdAt DateTime @default(now())
+  sentiment String
+  leaning   String
   article   Article  @relation(fields: [articleId], references: [id])
   articleId Int      @unique
 }
