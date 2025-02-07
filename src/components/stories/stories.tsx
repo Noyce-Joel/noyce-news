@@ -35,7 +35,6 @@ import RelevantReading from "../relevant-reading/relevant-reading";
 
 export default function Stories({ news }: { news: ArticleType[] }) {
   const articles = news || [];
-
   if (articles.length === 0) return <div>No articles available</div>;
 
   const items = [
