@@ -184,43 +184,29 @@ export default function Stories({ news }: { news: ArticleType[] }) {
                     </CardHeader>
                     {idx === 0 && (
                       <>
-                        {article.mainImg ? (
-                          <div className="relative w-full h-64">
-                            <Image
-                              src={article.mainImg}
-                              alt={article.headline}
-                              fill
-                              sizes="(max-width:768px) 100vw, 50vw"
-                              className="object-cover rounded-lg"
-                            />
+                        <ScrollArea className="border-gray-400 flex flex-col gap-4 h-52 px-4">
+                          <div className="prose max-w-none text-base text-white mt-10">
+                            {article.keyPoints?.keyPoints?.key_points?.map(
+                              (keyPoint, idx) => (
+                                <div
+                                  key={keyPoint.title}
+                                  className="md:px-8 px-4 border-l border-gray-700  mb-12"
+                                >
+                                  <h3 className="text-xl font-semibold mb-2">
+                                    {keyPoint.title}
+                                  </h3>
+                                  <ul className="prose prose-invert">
+                                    {keyPoint.content.map((content, i) => (
+                                      <li key={i} className=" mb-2">
+                                        {content}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )
+                            )}
                           </div>
-                        ) : (
-                          <>
-                            <ScrollArea className="border-gray-400 flex flex-col gap-4 h-52 px-4">
-                              <div className="prose max-w-none text-base text-white mt-10">
-                                {article.keyPoints?.keyPoints?.key_points?.map(
-                                  (keyPoint, idx) => (
-                                    <div
-                                      key={keyPoint.title}
-                                      className="md:px-8 px-4 border-l border-gray-700  mb-12"
-                                    >
-                                      <h3 className="text-xl font-semibold mb-2">
-                                        {keyPoint.title}
-                                      </h3>
-                                      <ul className="prose prose-invert">
-                                        {keyPoint.content.map((content, i) => (
-                                          <li key={i} className=" mb-2">
-                                            {content}
-                                          </li>
-                                        ))}
-                                      </ul>
-                                    </div>
-                                  )
-                                )}
-                              </div>
-                            </ScrollArea>
-                          </>
-                        )}
+                        </ScrollArea>
                       </>
                     )}
                   </Card>
