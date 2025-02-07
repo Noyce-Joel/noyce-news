@@ -20,9 +20,7 @@ interface Article {
 }
 
 export default function RelevantReading({ articles }: { articles: any[] }) {
-  // Keywords to check for in the hostname, ignoring the TLD.
   const majorKeywords = [
-    // United States
     "nytimes",
     "washingtonpost",
     "latimes",
@@ -30,13 +28,12 @@ export default function RelevantReading({ articles }: { articles: any[] }) {
     "wsj",
     "chicagotribune",
     "bostonglobe",
-    // United Kingdom
     "guardian",
     "telegraph",
     "dailymail",
     "independent",
     "ft",
-    "thetimes", // Use `thetimes` to avoid potential false matches.
+    "thetimes",
     "mirror",
     "thesun",
     "express",
@@ -47,11 +44,9 @@ export default function RelevantReading({ articles }: { articles: any[] }) {
     "gov",
   ];
 
-  // Helper function to extract the hostname from a URL for display.
   const extractDomain = (url: string) =>
     new URL(url).hostname.replace("www.", "");
 
-  // Helper function to determine if a URL belongs to a major newspaper based on keywords.
   const isMajorNewspaper = (url: string) => {
     const hostname = new URL(url).hostname.toLowerCase();
     return majorKeywords.some((keyword) => hostname.includes(keyword));
@@ -79,7 +74,6 @@ export default function RelevantReading({ articles }: { articles: any[] }) {
     }
   };
 
-  // Sort articles so that major newspapers (based on keywords) appear first.
   const sortedArticles = [...articles].sort((a, b) => {
     const aIsMajor = isMajorNewspaper(a.url);
     const bIsMajor = isMajorNewspaper(b.url);
