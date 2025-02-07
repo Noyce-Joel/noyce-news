@@ -50,22 +50,22 @@ export default function Stories({ news }: { news: ArticleType[] }) {
     {
       title: "Environment",
       url: "/gov-uk/environment",
-      icon: <TbWorldHeart className=" h-5 w-5" />,
+      icon: <TbWorldHeart className=" h-4 w-4" />,
     },
     {
       title: "Business and Industry",
       url: "/gov-uk/business-and-industry",
-      icon: <TbBusinessplan className=" h-5 w-5" />,
+      icon: <TbBusinessplan className=" h-4 w-4" />,
     },
     {
       title: "Government",
       url: "/gov-uk/government",
-      icon: <TbBuildingCommunity className=" h-5 w-5" />,
+      icon: <TbBuildingCommunity className=" h-4 w-4" />,
     },
     {
       title: "Money",
       url: "/gov-uk/money",
-      icon: <TbReportMoney className=" h-5 w-5" />,
+      icon: <TbReportMoney className=" h-4 w-4" />,
     },
   ];
 
@@ -128,7 +128,7 @@ export default function Stories({ news }: { news: ArticleType[] }) {
         variants={containerVariants}
       >
         <motion.header
-          className="sticky top-0 z-50 bg-black py-6 pb-4 mb-6 border-b border-gray-400 flex justify-between items-center"
+          className="sticky top-0 z-50 bg-black py-6 pb-4 mb-6 border-b border-gray-400 flex md:flex-row flex-col justify-between items-center"
           variants={itemVariants}
         >
           <h1 className="text-2xl font-bold flex items-center gap-2">
@@ -148,35 +148,95 @@ export default function Stories({ news }: { news: ArticleType[] }) {
           variants={containerVariants}
         >
           {articles.map((article: ArticleType, idx: number) => (
-            <motion.div key={idx} variants={itemVariants}>
+            <motion.div
+              key={idx}
+              variants={itemVariants}
+              className={idx === 0 ? "md:row-span-2" : ""}
+            >
               <Dialog key={idx}>
-                <Card className="relative mb-2 lg:p-4  h-full">
-                  <CardHeader className="p-4">
-                    <DialogTrigger asChild>
-                      <CardTitle className="lg:text-4xl text-xl font-semibold leading-tight cursor-pointer">
+                <DialogTrigger asChild>
+                  <Card
+                    className={`relative mb-2 lg:p-4 h-full cursor-pointer  transition-colors hover:bg-gray-900 ${
+                      idx === 0 ? "border-4" : ""
+                    }`}
+                  >
+                    {idx === 0 && (
+                      <div className="absolute flex items-center gap-2 -top-2 -left-2 rounded-lg border border-white text-xs px-2 py-0.5  bg-background">
+                        <span className="text-sm font-semibold"> LATEST</span> |{" "}
+                        <span className="text-xs">
+                          {" "}
+                          {formatDate(article.createdAt)}
+                        </span>
+                      </div>
+                    )}
+                    <CardHeader className="p-4">
+                      <CardTitle className="lg:text-4xl text-xl font-semibold leading-tight ">
                         {article.headline}
                       </CardTitle>
-                    </DialogTrigger>
-                    <CardDescription className="text-sm text-gray-500 flex lg:flex-row flex-col gap-2 lg:gap-4 md:pt-4 uppercase">
-                      {formatDate(article.createdAt)}{" "}
-                      <span className="hidden lg:block">|</span>{" "}
-                      <Badge className="max-w-[300px] inline-block truncate">
-                        {article.tag.toUpperCase()}
-                      </Badge>
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
+
+                      <CardDescription className="text-sm text-gray-500 flex lg:flex-row flex-col gap-2 lg:gap-4 md:pt-4 uppercase">
+                        {formatDate(article.createdAt)}{" "}
+                        <span className="hidden lg:block">|</span>{" "}
+                        <Badge className="max-w-[300px] inline-block truncate h-fit">
+                          {article.tag.toUpperCase()}
+                        </Badge>
+                      </CardDescription>
+                    </CardHeader>
+                    {idx === 0 && (
+                      <>
+                        {article.mainImg ? (
+                          <div className="relative w-full h-64">
+                            <Image
+                              src={article.mainImg}
+                              alt={article.headline}
+                              fill
+                              sizes="(max-width:768px) 100vw, 50vw"
+                              className="object-cover rounded-lg"
+                            />
+                          </div>
+                        ) : (
+                          <>
+                            <ScrollArea className="border-gray-400 flex flex-col gap-4 h-52 px-4">
+                              <div className="prose max-w-none text-base text-white mt-10">
+                                {article.keyPoints?.keyPoints?.key_points?.map(
+                                  (keyPoint, idx) => (
+                                    <div
+                                      key={keyPoint.title}
+                                      className="md:px-8 px-4 border-l border-gray-700  mb-12"
+                                    >
+                                      <h3 className="text-xl font-semibold mb-2">
+                                        {keyPoint.title}
+                                      </h3>
+                                      <ul className="prose prose-invert">
+                                        {keyPoint.content.map((content, i) => (
+                                          <li key={i} className=" mb-2">
+                                            {content}
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            </ScrollArea>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </Card>
+                </DialogTrigger>
+
                 <DialogContent className="md:max-w-screen-lg h-[95vh] w-[95vw] md:p-12 p-0  border-gray-400 flex flex-col gap-4">
                   <ScrollArea className="border-gray-400 flex flex-col gap-4">
                     <DialogHeader className="mt-8 md:mt-0">
-                      <DialogTitle className="md:flex hidden md:text-4xl text-2xl font-semibold leading-tight mb-4 px-4 md:px-0">
+                      <DialogTitle className="md:flex hidden md:text-4xl text-2xl font-semibold leading-tight mb-4 px-4 md:pl-0 md:pr-12">
                         {article.standFirst}{" "}
                       </DialogTitle>
                       <div className="text-sm text-gray-500 flex flex-col md:flex-row gap-4 items-center">
                         <div className="flex gap-4 items-center">
                           <span className="flex items-center gap-2 text-white relative">
                             {getSourceIcon(article.newspaper) as ReactNode}
-                            <span className="text-white absolute -bottom-2 -right-2">
+                            <span className="text-black bg-gray-400 rounded-full border border-white p-0.5 absolute -bottom-2 -right-2">
                               {getSectionIcon(article.section) as ReactNode}
                             </span>
                           </span>{" "}
@@ -191,7 +251,7 @@ export default function Stories({ news }: { news: ArticleType[] }) {
                           </Button>
                           <span className="hidden md:block"> |</span>
                         </div>
-                        <div className="flex gap-4 items-center">
+                        <div className="flex md:flex-row flex-col gap-4 items-center">
                           <span className="uppercase">
                             {formatDate(article.createdAt)}
                           </span>

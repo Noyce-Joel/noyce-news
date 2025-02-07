@@ -16,9 +16,47 @@ interface Article {
   leaning: string;
   sentiment: string;
   url: string;
+  title: string;
 }
 
 export default function RelevantReading({ articles }: { articles: any[] }) {
+  // Keywords to check for in the hostname, ignoring the TLD.
+  const majorKeywords = [
+    // United States
+    "nytimes",
+    "washingtonpost",
+    "latimes",
+    "usatoday",
+    "wsj",
+    "chicagotribune",
+    "bostonglobe",
+    // United Kingdom
+    "guardian",
+    "telegraph",
+    "dailymail",
+    "independent",
+    "ft",
+    "thetimes", // Use `thetimes` to avoid potential false matches.
+    "mirror",
+    "thesun",
+    "express",
+    "bbc",
+    "standard",
+    "metro",
+    "sky",
+    "gov",
+  ];
+
+  // Helper function to extract the hostname from a URL for display.
+  const extractDomain = (url: string) =>
+    new URL(url).hostname.replace("www.", "");
+
+  // Helper function to determine if a URL belongs to a major newspaper based on keywords.
+  const isMajorNewspaper = (url: string) => {
+    const hostname = new URL(url).hostname.toLowerCase();
+    return majorKeywords.some((keyword) => hostname.includes(keyword));
+  };
+
   const getSentimentColor = (sentiment: string) => {
     switch (sentiment.toLowerCase()) {
       case "positive":
@@ -41,6 +79,16 @@ export default function RelevantReading({ articles }: { articles: any[] }) {
     }
   };
 
+  // Sort articles so that major newspapers (based on keywords) appear first.
+  const sortedArticles = [...articles].sort((a, b) => {
+    const aIsMajor = isMajorNewspaper(a.url);
+    const bIsMajor = isMajorNewspaper(b.url);
+
+    if (aIsMajor && !bIsMajor) return -1;
+    if (!aIsMajor && bIsMajor) return 1;
+    return 0;
+  });
+
   return (
     <div className="mt-8 space-y-12">
       <div className="flex items-center gap-2">
@@ -48,22 +96,20 @@ export default function RelevantReading({ articles }: { articles: any[] }) {
         <h2 className="text-xl font-semibold text-white">Relevant Reading</h2>
       </div>
       <div className="divide-y divide-gray-800/80 border-l border-gray-700 px-4">
-        {articles.map((article) => (
+        {sortedArticles.map((article) => (
           <div
             key={article.id}
-            className="group relative px-4 transition-colors hover:bg-gray-900/80"
+            className="group relative md:px-4 transition-colors hover:bg-gray-900"
           >
             <a
               href={article.url}
               target="_blank"
               rel="noopener noreferrer"
-              className=" py-4 pr-12 flex h-full gap-8"
+              className="py-4 md:pr-12 flex md:flex-row flex-col h-full md:gap-8 gap-4"
             >
-              <div className="flex flex-col gap-2 w-2/5">
+              <div className="flex flex-col gap-2 w-full md:w-2/5">
                 <div className="flex items-center gap-2">
-                  <p className="text-white">
-                    {new URL(article.url).hostname.replace("www.", "")}
-                  </p>
+                  <p className="text-white">{extractDomain(article.url)}</p>
                   <ExternalLink className="h-4 w-4 text-gray-500" />
                 </div>
                 <div className="flex flex-wrap items-center gap-3 text-sm">
@@ -92,8 +138,10 @@ export default function RelevantReading({ articles }: { articles: any[] }) {
                   </div>
                 </div>
               </div>
-              <div className="flex gap-2 w-3/5 h-full ">
-                <h1 className="text-white text-lg font-bold">{article.title}</h1>
+              <div className="flex gap-2 w-full md:w-3/5 h-full">
+                <h1 className="text-white text-lg font-bold">
+                  {article.title}
+                </h1>
               </div>
             </a>
           </div>
