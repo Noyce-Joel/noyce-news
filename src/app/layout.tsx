@@ -27,22 +27,14 @@ export default function RootLayout({
   const cookieStore: any = cookies();
   const defaultOpen = cookieStore.get("sidebar:state")?.value === "true";
   return (
-    // <ClerkProvider>
-
     <html lang="en" suppressHydrationWarning>
       <body className={`${sourceSerif.variable} antialiased`}>
-        {/* <SignedOut>
-              <Login />
-            </SignedOut>
-            <SignedIn> */}
         <SidebarProvider defaultOpen={defaultOpen}>
           <AppSidebar />
           <SidebarTrigger />
           <NewsProvider>{children}</NewsProvider>
         </SidebarProvider>
-        {/* </SignedIn> */}
       </body>
     </html>
-    // </ClerkProvider>
   );
 }

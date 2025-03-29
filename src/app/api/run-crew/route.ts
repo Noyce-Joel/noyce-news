@@ -37,7 +37,6 @@ export async function GET() {
 
     const responseData = await response.json();
 
-    // Ensure that responseData.result and responseData.result.raw are defined
     if (!responseData?.result?.raw) {
       console.error("Missing raw data. Received response data:", responseData);
       return NextResponse.json(

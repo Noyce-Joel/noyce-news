@@ -137,9 +137,6 @@ export default function Stories({ news }: { news: ArticleType[] }) {
               {news[0].section.name}
             </span>
           </h1>
-          <div className="text-sm text-gray-600 uppercase">
-            {formatDate(new Date().toLocaleDateString())}
-          </div>
         </motion.header>
 
         <motion.div
@@ -160,7 +157,7 @@ export default function Stories({ news }: { news: ArticleType[] }) {
                     }`}
                   >
                     {idx === 0 && (
-                      <div className="absolute flex items-center gap-2 -top-2 -left-2 rounded-lg border border-white text-xs px-2 py-0.5  bg-background">
+                      <div className="absolute flex items-center gap-2 -top-2 -right-2 rounded-lg border border-white text-xs px-2 py-0.5  bg-background">
                         <span className="text-sm font-semibold"> LATEST</span> |{" "}
                         <span className="text-xs">
                           {" "}

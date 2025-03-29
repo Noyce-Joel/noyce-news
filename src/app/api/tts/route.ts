@@ -81,10 +81,8 @@ export async function GET() {
     throw new Error("TTS API did not return audio content");
   }
 
-  // Convert audio content from base64 to binary
   const audioBuffer = Buffer.from(data.audioContent, "base64");
 
-  // Check if the object already exists
   try {
     console.log(`Checking if ${OBJECT_KEY} exists...`);
     await s3.send(
@@ -95,7 +93,6 @@ export async function GET() {
     );
 
     console.log("File exists. Deleting the existing file...");
-    // File exists, delete it
     await s3.send(
       new DeleteObjectCommand({
         Bucket: bucketName,
@@ -111,7 +108,6 @@ export async function GET() {
     }
   }
 
-  // Upload the new audio file
   console.log("Uploading new audio file...");
   await s3.send(
     new PutObjectCommand({
@@ -122,7 +118,6 @@ export async function GET() {
     })
   );
 
-  // Generate the S3 URL for the uploaded file
   const s3Url = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${OBJECT_KEY}`;
 
   return NextResponse.json({ url: s3Url });
